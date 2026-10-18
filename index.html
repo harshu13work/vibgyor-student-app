@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibgyor School Management Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Animated Splash Screen -->
+  <div id="splashScreen" class="splash-screen hidden" aria-live="polite" aria-label="Vibgyor Group of Schools loading screen">
+    <div class="splash-glow-backdrop"></div>
+    <div class="splash-content">
+      <div class="splash-logo-mark">V</div>
+      <h1 id="splashTitle" class="splash-title"></h1>
+    </div>
+  </div>
+
+  <div id="loginPage" class="login-page hidden">
+    <div class="login-shell">
+      <aside class="login-brand-panel" aria-label="School welcome">
+        <div class="login-brand-content">
+          <div class="login-brand-logo">
+            <span class="logo-mark vibgyor-logo login-logo-mark" aria-label="Vibgyor logo">V</span>
+            <div class="login-brand-names">
+              <strong>VIBGYOR GROUP</strong>
+              <small>OF SCHOOLS</small>
+            </div>
+          </div>
+          <p class="login-brand-eyebrow">Welcome to</p>
+          <h1 class="login-brand-title">Your School Management Portal</h1>
+          <p class="login-brand-message">
+            Sign in to manage schedules, staff, groups, and school updates in one secure workspace built for
+            school administration and staff.
+          </p>
+        </div>
+        <div class="login-brand-accent" aria-hidden="true"></div>
+      </aside>
+
+      <section class="login-form-panel">
+        <div class="login-card">
+          <div class="login-form-header">
+            <h2>Login to Vibgyor</h2>
+            <p class="subtext">Enter your credentials to continue to the school portal.</p>
+          </div>
+          <form id="loginForm" class="login-form">
+            <div class="auth-grid">
+              <div class="auth-main">
+                <label for="usernameInput">Username / Email</label>
+                <input id="usernameInput" type="text" placeholder="yourname@gmail.com" minlength="5" maxlength="64"
+                  required autocomplete="username" />
+                <p id="roleDisplay" class="role-display">Select a role to begin</p>
+                <label for="passwordInput">Password</label>
+                <input id="passwordInput" type="password" placeholder="Enter password" minlength="5" maxlength="64"
+                  required autocomplete="current-password" />
+                <div class="forgot-password-wrapper">
+                  <button type="button" id="forgotPasswordBtn" class="forgot-password-link" onclick="openForgotPasswordModal()">Forgot Password?</button>
+                </div>
+              </div>
+              <aside id="signupRoleWrapper" class="auth-side signup-role-wrapper hidden">
+                <div class="role-card">
+                  <h3>Select your role</h3>
+                  <select id="signupRoleSelect">
+                    <option value="Staff">Staff</option>
+                    <option value="Principal">Principal</option>
+                  </select>
+                  <p class="role-note">Choose the role that matches your account.</p>
+                </div>
+              </aside>
+            </div>
+            <button type="submit" class="login-submit-btn">Login</button>
+            <p id="loginError" class="login-error"></p>
+            <p class="login-note">Demo login works for all roles. Load a demo account:</p>
+            <div class="demo-login-buttons" aria-label="Load demo credentials">
+              <button type="button" class="demo-login-btn" data-username="admin.schoolapp@org" data-password="password123">Load Admin</button>
+              <button type="button" class="demo-login-btn" data-username="preetam.p" data-password="password123">Load Staff</button>
+              <button type="button" class="demo-login-btn" data-username="sunil.kumar" data-password="password123">Load Teacher</button>
+              <button type="button" class="demo-login-btn" data-username="rajesh.sharma" data-password="password123">Load Parent (2 Kids)</button>
+              <button type="button" class="demo-login-btn" data-username="sunita.gupta" data-password="password123">Load Parent (1 Kid)</button>
+              <button type="button" class="demo-login-btn" data-username="aarav.sharma" data-password="password123">Load Student</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Logout Confirmation Dialog -->
+  <div id="logoutOverlay" class="logout-overlay hidden" aria-modal="true" role="dialog" aria-labelledby="logoutDialogTitle">
+    <div id="logoutDialog" class="logout-dialog">
+      <div class="logout-dialog-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </div>
+      <h3 id="logoutDialogTitle" class="logout-dialog-title">Log out?</h3>
+      <p class="logout-dialog-sub">Are you sure you want to log out of your session?</p>
+      <div class="logout-dialog-actions">
+        <button id="logoutCancelBtn" class="logout-cancel-btn">Cancel</button>
+        <button id="logoutConfirmBtn" class="logout-confirm-btn">Yes, Log out</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="app hidden">
+    <!-- Global Navigation Bar -->
+    <div class="launchpad-navigation-bar">
+      <div class="lp-nav-left">
+        <button id="vibgyorBrandBtn" class="brand-text-only" aria-label="Vibgyor Group of Schools - click for details" title="Click to learn about Vibgyor Group of Schools">
+          <strong>VIBGYOR</strong>
+          <small>GROUP OF SCHOOLS</small>
+        </button>
+        <button id="lpBackBtn" class="lp-back-btn hidden" aria-label="Go back one level">
+          <span class="lp-back-arrow"></span> Back
+        </button>
+      </div>
+      <div class="lp-search-center">
+        <div class="lp-search-container">
+          <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="search" id="launchpadSearch" placeholder="Search modules, grades, section..." class="launchpad-search" aria-label="Launchpad search" />
+        </div>
+      </div>
+      <div class="lp-nav-right">
+        <div class="top-profile-bar">
+          <!-- Back button — hides when on launchpad -->
+          <button type="button" id="globalBackBtn" class="global-back-btn hidden" aria-label="Go back" onclick="goBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            <span>Back</span>
+          </button>
+          <!-- Launchpad home button — hides when already on launchpad -->
+          <button type="button" id="backToLaunchpadBtn" class="launchpad-home-btn hidden" aria-label="Go to Launchpad" onclick="switchTab('launchpad')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Launchpad</span>
+          </button>
+          <!-- Dashboard button — hides when on dashboard -->
+          <button type="button" id="topDashboardBtn" class="launchpad-home-btn hidden" aria-label="Go to Dashboard" onclick="switchTab('dashboard')" style="background: linear-gradient(135deg, #10b981, #059669);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Dashboard</span>
+          </button>
+          <div class="user-info">
+            <span id="welcomeMessage" class="welcome-text">Welcome</span>
+            <div class="badges">
+              <span id="currentRoleBadge" class="role-badge">Role: Principal</span>
+              <span id="currentClassBadge" class="role-badge role-badge-class">Class: All</span>
+              <span id="roleHint" class="hidden"></span>
+            </div>
+          </div>
+          <button type="button" id="notificationBtn" class="notification-btn" aria-label="Notifications">
+            <span class="icon">&#9825;</span>
+            <span id="notificationBadge" class="notification-badge hidden">0</span>
+          </button>
+          <button type="button" id="logoutBtn" class="logout-btn" aria-label="Logout">
+            <span class="logout-icon"></span>
+            <span class="logout-text">Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <section class="app-content">
+
+      <!-- Launchpad Section -->
+      <section id="launchpadSection" class="page-section">
+        <div id="launchpadGridContainer" class="launchpad-grid-container">
+          <div class="launchpad-grid" id="launchpadGrid"></div>
+
+          <!-- Innovative Role Works & Tasks Completion Hub (Right Side Panel) -->
+          <aside id="roleWorksSidebar" class="role-works-sidebar" aria-label="Works and Tasks Completion Hub">
+            <div class="works-sidebar-header">
+              <div class="works-title-group">
+                <div class="works-title-badge">Live Hub</div>
+                <h2 class="works-sidebar-title">TASKS TO COMPLETE
+                </h2>
+                <p class="works-sidebar-sub" id="worksSidebarSub">Your Tasks &amp; Activities</p>
+              </div>
+              <button id="toggleAddWorkBtn" class="works-add-btn" type="button" aria-label="Add new work task">
+                <span>+</span> New Work
+              </button>
+            </div>
+
+
+            <!-- Completion Overview Progress Card -->
+            <div class="works-progress-card">
+              <div class="works-progress-ring-box">
+                <svg class="works-progress-ring" viewBox="0 0 100 100">
+                  <defs>
+                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#6366f1" />
+                      <stop offset="50%" stop-color="#3b82f6" />
+                      <stop offset="100%" stop-color="#10b981" />
+                    </linearGradient>
+                  </defs>
+                  <circle class="ring-bg" cx="50" cy="50" r="40"></circle>
+                  <circle id="worksProgressCircle" class="ring-fill" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="50.24"></circle>
+                </svg>
+                <div class="ring-text">
+                  <strong id="worksProgressPercent">80%</strong>
+                  <small>Done</small>
+                </div>
+              </div>
+              <div class="works-progress-stats">
+                <div class="works-stat-item">
+                  <span class="stat-label">Total Works</span>
+                  <strong id="worksTotalCount">16</strong>
+                </div>
+                <div class="works-stat-item">
+                  <span class="stat-label">Completed</span>
+                  <strong id="worksCompletedCount" class="text-success">13</strong>
+                </div>
+                <div class="works-stat-item">
+                  <span class="stat-label">Pending</span>
+                  <strong id="worksPendingCount" class="text-warning">3</strong>
+                </div>
+              <!-- Animated New Work Modal (replaces drawer) -->              </div>
+            </div>
+
+            <!-- Scrollable Works Task List -->
+            <div class="works-list-container">
+              <div class="works-section-heading">
+                <span>Task Checklist</span>
+                <span id="activeRoleLabel" class="active-role-tag">All Roles</span>
+              </div>
+              <div id="worksTaskList" class="works-task-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Dashboard Section -->
+      <section id="dashboardSection" class="page-section hidden">
+        
+        <!-- VIBGYOR ADS BANNER -->
+        <div class="db-ads-banner">
+          <div class="db-ads-content">
+            <span class="db-ads-badge">Special Event</span>
+            <h2 class="db-ads-title">VIBGYOR Annual Sports Meet 2026!</h2>
+            <p class="db-ads-desc">Join us this Saturday for a grand celebration of sportsmanship and talent. All students and parents are welcome!</p>
+            <button type="button" class="db-ads-btn">Learn More</button>
+          </div>
+        </div>
+
+        <!-- Bottom Launchpad Button -->
+        <div class="db-bottom-actions">
+          <button type="button" class="db-bottom-lp-btn" onclick="switchTab('launchpad')" aria-label="Go to Launchpad">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+            Go to Launchpad
+          </button>
+        </div>
+
+      </section>
+
+
+
+      <!-- Homework/Home Section -->
+      <section id="homeSection" class="page-section hidden" style="padding: 1.5rem 2rem 4rem 2rem; box-sizing: border-box; width: 100%; min-height: auto; overflow: visible;">
+        
+        <!-- Header Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #e0edff; color: #2563eb; display: flex; align-items: center; justify-content: center; border: 1px solid #c7dcfd; flex-shrink: 0;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <circle cx="8" cy="14" r="1" fill="#2563eb"></circle>
+                <circle cx="12" cy="14" r="1" fill="#2563eb"></circle>
+                <circle cx="16" cy="14" r="1" fill="#2563eb"></circle>
+                <circle cx="8" cy="18" r="1" fill="#2563eb"></circle>
+                <circle cx="12" cy="18" r="1" fill="#2563eb"></circle>
+                <circle cx="16" cy="18" r="1" fill="#2563eb"></circle>
+              </svg>
+            </div>
+            <div>
+              <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 0 0 0.2rem 0; letter-spacing: -0.02em;">Homework</h1>
+              <p style="font-size: 0.88rem; color: #64748b; margin: 0;">Create, view and manage homework for your classes.</p>
+            </div>
+          </div>
+
+          <button type="button" onclick="openCreateHomeworkModal()" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #2563eb; color: #ffffff; padding: 0.65rem 1.35rem; border-radius: 10px; font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(37,99,235,0.25); transition: all 0.2s;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Create Homework</span>
+          </button>
+        </div>
+
+        <!-- Metric Summary Cards & Filters Row (Cards on Left, Filters on Right) -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1.25rem;">
+          
+          <!-- Summary Cards on Left -->
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; flex: 1.4; min-width: 320px;">
+            
+            <!-- Total Homework -->
+            <div style="display: flex; align-items: center; gap: 0.85rem; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 0.85rem 1.25rem; min-width: 170px; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #dbeafe;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 0.2rem;">Total Homework</div>
+                <div style="display: flex; align-items: baseline; gap: 0.4rem;">
+                  <span id="hwMetricTotal" style="font-size: 1.4rem; font-weight: 800; color: #0f172a; line-height: 1;">6</span>
+                  <span style="font-size: 0.75rem; color: #64748b; font-weight: 500;">This week</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completed -->
+            <div style="display: flex; align-items: center; gap: 0.85rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 0.85rem 1.25rem; min-width: 170px; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: #22c55e; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #166534; margin-bottom: 0.2rem;">Completed</div>
+                <div id="hwMetricCompleted" style="font-size: 1.4rem; font-weight: 800; color: #15803d; line-height: 1; display: flex; align-items: baseline; gap: 0.35rem;">
+                  2 <span style="font-size: 0.8rem; font-weight: 700; color: #16a34a;">(33%)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending -->
+            <div style="display: flex; align-items: center; gap: 0.85rem; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 14px; padding: 0.85rem 1.25rem; min-width: 170px; flex: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+              <div style="width: 38px; height: 38px; border-radius: 50%; background: #f97316; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9"></circle>
+                  <polyline points="12 7 12 12 15 15"></polyline>
+                </svg>
+              </div>
+              <div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: #9a3412; margin-bottom: 0.2rem;">Pending</div>
+                <div id="hwMetricPending" style="font-size: 1.4rem; font-weight: 800; color: #c2410c; line-height: 1; display: flex; align-items: baseline; gap: 0.35rem;">
+                  4 <span style="font-size: 0.8rem; font-weight: 700; color: #ea580c;">(67%)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Stacked Filter Controls on Right -->
+          <div style="display: flex; flex-direction: column; gap: 0.65rem; min-width: 360px; flex: 1;">
+            
+            <!-- Top Controls: Class & Date -->
+            <div style="display: flex; gap: 0.65rem; align-items: center;">
+              <!-- Class Select -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.5rem 0.85rem; flex: 1;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <select id="hwClassFilterSelect" onchange="hwOnClassFilterChange(this.value)" style="width: 100%; border: none; background: transparent; font-weight: 600; color: #0f172a; font-size: 0.88rem; outline: none; cursor: pointer;">
+                  <option value="All Classes">All Classes</option>
+                  <option value="Grade 7 - B">Grade 7 - B</option>
+                  <option value="Grade 8 - A">Grade 8 - A</option>
+                  <option value="Grade 8 - B">Grade 8 - B</option>
+                  <option value="Grade 7 - A">Grade 7 - A</option>
+                  <option value="Grade 6 - B">Grade 6 - B</option>
+                </select>
+              </div>
+
+              <!-- Date Range Picker -->
+              <div style="display: flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.5rem 0.85rem; flex: 1.25; justify-content: space-between; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 0.45rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span style="font-size: 0.85rem; font-weight: 600; color: #0f172a;">01 Oct 2026 - 07 Oct 2026</span>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Search Input -->
+            <div style="position: relative; width: 100%;">
+              <input type="text" id="hwSearchInput" placeholder="Search homework..." oninput="hwOnSearchInput(this.value)" style="width: 100%; padding: 0.5rem 0.85rem 0.5rem 2.2rem; border-radius: 10px; border: 1px solid #cbd5e1; font-size: 0.88rem; box-sizing: border-box; background: #ffffff; color: #0f172a; outline: none;" />
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%);">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Table Roster Card -->
+        <div style="background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03); overflow: hidden;">
+          
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid #e2e8f0; background: #eff6ff;">
+                  <th style="padding: 14px 16px; text-align: left; color: #475569; font-weight: 700; width: 40px;">#</th>
+                  <th style="padding: 14px 16px; text-align: left; color: #475569; font-weight: 700; width: 140px;">Class</th>
+                  <th style="padding: 14px 16px; text-align: left; color: #475569; font-weight: 700; width: 180px;">Subject</th>
+                  <th style="padding: 14px 16px; text-align: left; color: #475569; font-weight: 700;">Topic / Description</th>
+                  <th style="padding: 14px 16px; text-align: left; color: #475569; font-weight: 700; width: 160px;">Due Date</th>
+                </tr>
+              </thead>
+              <tbody id="hwRosterTableBody">
+                <!-- Dynamically rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Table Footer / Pagination -->
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background: #ffffff; border-top: 1px solid #f1f5f9; font-size: 0.85rem; color: #64748b;">
+            <div id="hwPaginationText">Showing 1 - 5 of 5 homework</div>
+            <div style="display: flex; align-items: center; gap: 0.35rem;">
+              <button type="button" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 6px; cursor: pointer; color: #64748b;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button type="button" style="width: 30px; height: 30px; border: none; background: #2563eb; color: #ffffff; border-radius: 6px; font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; justify-content: center;">1</button>
+              <button type="button" style="display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 6px; cursor: pointer; color: #64748b;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- CREATE HOMEWORK MODAL -->
+      <div id="createHomeworkModal" class="fees-modal-backdrop hidden">
+        <div class="fees-modal-dialog" style="max-width: 500px;">
+          <div class="fees-modal-header">
+            <h3>Create Homework</h3>
+            <button type="button" class="fees-modal-close" onclick="closeCreateHomeworkModal()">&times;</button>
+          </div>
+          <form id="createHomeworkForm" onsubmit="handleSaveNewHomework(event)">
+            <div class="fees-modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div>
+                <label for="hwModalClass" style="font-weight: 600; font-size: 0.85rem;">Class</label>
+                <select id="hwModalClass" required style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; margin-top: 0.25rem;">
+                  <option value="Grade 8 - A">Grade 8 - A</option>
+                  <option value="Grade 8 - B">Grade 8 - B</option>
+                  <option value="Grade 7 - A">Grade 7 - A</option>
+                  <option value="Grade 6 - B">Grade 6 - B</option>
+                  <option value="Grade 7 - B">Grade 7 - B</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="hwModalSubject" style="font-weight: 600; font-size: 0.85rem;">Subject</label>
+                <select id="hwModalSubject" required style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; margin-top: 0.25rem;">
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Science">Science</option>
+                  <option value="English">English</option>
+                  <option value="Social Science">Social Science</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Computer Science">Computer Science</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="hwModalTopic" style="font-weight: 600; font-size: 0.85rem;">Topic Title</label>
+                <input type="text" id="hwModalTopic" placeholder="e.g. Chapter 6 - Linear Equations" required style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; margin-top: 0.25rem; box-sizing: border-box;" />
+              </div>
+
+              <div>
+                <label for="hwModalDescription" style="font-weight: 600; font-size: 0.85rem;">Description / Instructions</label>
+                <textarea id="hwModalDescription" rows="3" placeholder="e.g. Solve the given worksheet (pages 45-47)." required style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; margin-top: 0.25rem; box-sizing: border-box; resize: vertical;"></textarea>
+              </div>
+
+              <div>
+                <label for="hwModalDueDate" style="font-weight: 600; font-size: 0.85rem;">Due Date</label>
+                <input type="date" id="hwModalDueDate" required style="width: 100%; padding: 0.5rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; margin-top: 0.25rem; box-sizing: border-box;" />
+              </div>
+            </div>
+
+            <div class="fees-modal-footer" style="padding: 1rem 1.25rem; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem;">
+              <button type="button" class="fees-modal-cancel" onclick="closeCreateHomeworkModal()" style="padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; cursor: pointer; font-weight: 600;">Cancel</button>
+              <button type="submit" style="padding: 0.5rem 1.25rem; border-radius: 8px; border: none; background: #2563eb; color: #ffffff; cursor: pointer; font-weight: 700;">Save Homework</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <section id="groupsSection" class="page-section hidden">
+        <div class="groups-messenger">
+
+          <!-- LEFT: Dark sidebar -->
+          <aside class="groups-nav-panel">
+
+            <!-- Header row: icon + title + bell -->
+            <div class="groups-nav-block">
+              <div class="groups-nav-header-top">
+                <div class="groups-nav-icon-wrap">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <div class="groups-nav-title-block">
+                  <p class="groups-eyebrow">MESSAGING</p>
+                  <h2 class="groups-nav-title">Groups</h2>
+                </div>
+                <button class="groups-nav-bell" type="button" aria-label="Notifications">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+              </div>
+
+              <!-- Stats tiles -->
+              <div class="groups-nav-stats">
+                <div class="groups-stat-pill">
+                  <div class="gstat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                  <span>Groups</span>
+                  <strong id="totalGroupsCount">0</strong>
+                </div>
+                <div class="groups-stat-pill">
+                  <div class="gstat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+                  <span>Active</span>
+                  <strong id="activeChatsCount">0</strong>
+                </div>
+                <div class="groups-stat-pill">
+                  <div class="gstat-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                  <span>Members</span>
+                  <strong id="totalGroupMembersCount">0</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Create group form -->
+            <div class="groups-nav-block groups-nav-create">
+              <p class="groups-filter-label">CREATE GROUP</p>
+              <div class="group-form group-form-compact">
+                <div class="gform-input-row">
+                  <span class="gform-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </span>
+                  <input id="groupNameInput" type="text" placeholder="Group name" />
+                </div>
+                <div class="gform-input-row">
+                  <span class="gform-input-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  </span>
+                  <input id="groupDescriptionInput" type="text" placeholder="Description (optional)" />
+                </div>
+                <button id="addGroupBtn" type="button" class="gform-create-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Create Group
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick guide -->
+            <div class="groups-nav-block groups-quick-guide">
+              <p class="groups-filter-label">QUICK GUIDE</p>
+              <ul class="groups-guide-list">
+                <li>
+                  <span class="guide-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                  Create groups for classes, projects or study circles
+                </li>
+                <li>
+                  <span class="guide-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                  Start conversations and collaborate easily
+                </li>
+                <li>
+                  <span class="guide-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+                  Keep everyone informed in one place
+                </li>
+              </ul>
+            </div>
+
+          </aside>
+
+          <!-- MIDDLE: Chats list -->
+          <div class="groups-list-panel">
+            <div class="groups-list-header">
+              <div class="groups-list-header-left">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <h3>Chats</h3>
+              </div>
+              <div class="groups-list-header-right">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span class="groups-list-hint">Recent conversations</span>
+              </div>
+            </div>
+            <div id="groupsList" class="groups-list groups-chat-list"></div>
+          </div>
+
+          <!-- RIGHT: Conversation panel -->
+          <div class="groups-conversation-panel">
+            <div id="groupChatPanel" class="group-chat-panel">
+
+              <!-- Chat header bar -->
+              <div class="group-chat-header">
+                <div class="group-chat-header-row">
+                  <div class="group-chat-header-left">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="gchat-header-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <div class="group-chat-header-main">
+                      <p id="chatGroupTitle">Select a group to chat</p>
+                      <small id="chatParticipants" class="group-chat-participants">0 participants</small>
+                    </div>
+                  </div>
+                  <div class="group-chat-header-actions">
+                    <button id="openGroupInfoBtn" type="button" class="gchat-info-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      Group Info
+                    </button>
+                    <button id="groupCallBtn" type="button" class="gchat-call-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.87a16 16 0 0 0 6.18 6.18l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                      Call
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Snapshot (used by JS) -->
+              <div id="groupSnapshot" class="group-snapshot hidden">
+                <div class="group-snapshot-header">
+                  <div id="groupAvatar" class="group-avatar">G</div>
+                  <div>
+                    <p id="groupSnapshotName" class="group-snapshot-name">No group selected</p>
+                    <p id="groupSnapshotInfo" class="group-snapshot-info">Pick a group to view details and chat.</p>
+                  </div>
+                </div>
+                <div class="group-snapshot-stats">
+                  <span id="groupSnapshotMembers">0 members</span>
+                  <span id="groupSnapshotRoles">0 staff members</span>
+                </div>
+                <p id="groupSnapshotDescription" class="group-snapshot-description">Group description appears here.</p>
+              </div>
+
+              <!-- Messages area + right empty state -->
+              <div id="chatMessages" class="chat-messages">
+                <div class="groups-right-empty">
+                  <div class="groups-right-illus">
+                    <svg width="120" height="120" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="80" cy="80" r="80" fill="rgba(79,98,255,0.06)"/>
+                      <rect x="25" y="42" width="66" height="46" rx="14" fill="rgba(79,98,255,0.14)"/>
+                      <rect x="36" y="55" width="42" height="7" rx="3.5" fill="rgba(79,98,255,0.38)"/>
+                      <rect x="36" y="67" width="28" height="7" rx="3.5" fill="rgba(79,98,255,0.25)"/>
+                      <rect x="62" y="76" width="60" height="42" rx="12" fill="rgba(79,98,255,0.22)"/>
+                      <rect x="72" y="89" width="36" height="6" rx="3" fill="rgba(79,98,255,0.52)"/>
+                      <rect x="72" y="100" width="24" height="6" rx="3" fill="rgba(79,98,255,0.35)"/>
+                      <rect x="112" y="124" width="26" height="16" rx="5" fill="rgba(79,98,255,0.18)"/>
+                      <ellipse cx="125" cy="113" rx="8" ry="14" fill="rgba(79,98,255,0.25)" transform="rotate(-15 125 113)"/>
+                      <ellipse cx="133" cy="109" rx="6" ry="11" fill="rgba(79,98,255,0.18)" transform="rotate(22 133 109)"/>
+                      <circle cx="28" cy="126" r="7" fill="rgba(79,98,255,0.1)"/>
+                      <circle cx="138" cy="46" r="10" fill="rgba(79,98,255,0.08)"/>
+                      <circle cx="154" cy="70" r="6" fill="rgba(79,98,255,0.06)"/>
+                    </svg>
+                  </div>
+                  <h4>Choose a group or start a new one</h4>
+                  <p>Start chatting, sharing ideas and staying connected with your class or team.</p>
+                </div>
+              </div>
+
+              <!-- Message input bar -->
+              <div class="chat-input-row">
+                <button class="chat-emoji-btn" type="button" aria-label="Emoji">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </button>
+                <input id="chatInput" type="text" placeholder="Type a message..." />
+                <button class="chat-attach-btn" type="button" aria-label="Attach file">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                </button>
+                <button id="sendChatBtn" type="button" class="chat-send-btn" aria-label="Send message">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Group details drawer -->
+            <div id="groupDetailsCard" class="group-detail-drawer hidden">
+              <div class="group-detail-drawer-header">
+                <h3>Group details</h3>
+                <button id="closeGroupDetailsBtn" type="button" class="action-btn action-delete">Close</button>
+              </div>
+              <div id="groupDetails" class="group-details"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="examSection" class="page-section hidden ex-container">
+        <div class="ex-grid">
+          <!-- Left: Add Exam Form -->
+          <div class="ex-form-card content-split-side" id="examFormSide">
+            <div class="ex-form-header">
+              <div class="ex-header-icon-bg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div class="ex-header-text">
+                <h3 class="ex-form-title">Plan an Exam</h3>
+                <p class="ex-form-subtitle">Add exam details and study days</p>
+              </div>
+              <span class="ex-header-sparkle">✨</span>
+            </div>
+            <form class="ex-form exam-form" onsubmit="return false;">
+              <div class="ex-field-group">
+                <label for="examNameInput">Exam Name</label>
+                <input id="examNameInput" type="text" placeholder="e.g. Mid-Term Mathematics" />
+              </div>
+              <div class="ex-field-group">
+                <label for="examSubjectInput">Subject</label>
+                <input id="examSubjectInput" type="text" placeholder="e.g. Mathematics" />
+              </div>
+              <div class="ex-field-group">
+                <label for="examClassInput">Class</label>
+                <select id="examClassInput">
+                  <option value="">Select class</option>
+                </select>
+              </div>
+              <div class="ex-field-group">
+                <label for="examDateInput">Exam Date</label>
+                <input id="examDateInput" type="date" />
+              </div>
+              <div class="ex-field-group">
+                <label for="studyDaysInput">Study Days</label>
+                <input id="studyDaysInput" type="number" min="0" placeholder="e.g. 7" />
+              </div>
+              <div class="ex-field-group">
+                <label for="examFileInput">Attachment (optional)</label>
+                <input id="examFileInput" type="file" />
+              </div>
+              <button type="button" id="addExamBtn" class="ex-btn-add-new" style="background:#4A90E2;color:#fff;padding:0.65rem 1rem;border:none;border-radius:0.5rem;cursor:pointer;font-weight:600;">
+                + Add Exam
+              </button>
+            </form>
+          </div>
+
+          <!-- Right: Upcoming exams list -->
+          <div class="ex-display-card content-split-main">
+            <div class="ex-display-header">
+              <div class="ex-display-title-group">
+                <div class="ex-display-icon-bg">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="ex-display-title">Upcoming exams</h3>
+                  <p class="ex-display-subtitle">Plan your study days and stay exam-ready.</p>
+                </div>
+              </div>
+              <div class="ex-cursive-accent">
+                Small steps make big results! ✨
+              </div>
+            </div>
+            <div id="examsList" class="exams-list"></div>
+          </div>
+        </div>
+      </section>
+
+<section id="feesSection" class="page-section hidden">
+  <!-- Top Header Bar -->
+  <div class="fees-main-header">
+    <div class="fees-header-title-group">
+      <div class="fees-header-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 3h12M6 8h12M6 13h8M6 8a4 4 0 0 1 4 4v9M6 13l7 8"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="fees-page-title" id="feesHeaderTitle">Fees &amp; Finance</h1>
+        <p class="fees-page-subtitle" id="feesHeaderSubtitle">Grade &amp; Section Fee Management System</p>
+      </div>
+    </div>
+
+    <div class="fees-header-actions">
+      <!-- Back button -->
+      <button type="button" id="feesBackBtn" class="fees-btn-back hidden" onclick="navigateFeesBack()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back
+      </button>
+
+      <!-- Add Student Fee Button for Admin -->
+      <button type="button" id="openAddStudentFeeBtn" class="fees-btn-add-new admin-only-btn" onclick="openAddStudentFeeModal()">
+        <span>+</span> Add Student Fee
+      </button>
+    </div>
+  </div>
+
+  <div class="page-body fees-dashboard-body">
+
+    <!-- 4 KPI Stat Cards (Matching Mockup) -->
+    <div class="fees-kpi-grid-mockup">
+      <!-- Card 1: Total Fees (Purple) -->
+      <div class="fees-kpi-card-v2 card-v2-purple">
+        <div class="kpi-v2-top">
+          <div class="kpi-v2-icon icon-purple">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 3h12M6 8h12M6 13h8M6 8a4 4 0 0 1 4 4v9M6 13l7 8"/></svg>
+          </div>
+          <div>
+            <span class="kpi-v2-label label-purple">Total Fees</span>
+            <h2 id="feesStatTotal" class="kpi-v2-value">₹58,000</h2>
+            <p class="kpi-v2-sub">All collected + pending</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Paid Fees (Green) -->
+      <div class="fees-kpi-card-v2 card-v2-green">
+        <div class="kpi-v2-top">
+          <div class="kpi-v2-icon icon-green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M16 12h.01"/></svg>
+          </div>
+          <div>
+            <span class="kpi-v2-label label-green">Paid Fees</span>
+            <h2 id="feesStatPaid" class="kpi-v2-value">₹29,500</h2>
+            <p class="kpi-v2-sub">Total amount received</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Pending Fees (Orange) -->
+      <div class="fees-kpi-card-v2 card-v2-orange">
+        <div class="kpi-v2-top">
+          <div class="kpi-v2-icon icon-orange">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <span class="kpi-v2-label label-orange">Pending Fees</span>
+            <h2 id="feesStatPending" class="kpi-v2-value">₹28,500</h2>
+            <p class="kpi-v2-sub">Total amount pending</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4: Total Pending Fees (Red/Pink) -->
+      <div class="fees-kpi-card-v2 card-v2-red">
+        <div class="kpi-v2-top">
+          <div class="kpi-v2-icon icon-red">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          </div>
+          <div>
+            <span class="kpi-v2-label label-red">Total Pending Fees</span>
+            <h2 id="feesStatOverdue" class="kpi-v2-value">₹29,500</h2>
+            <p class="kpi-v2-sub">Overdue + pending</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Section (Matching Mockup) -->
+    <div class="fees-quick-access-section">
+      <h3 class="quick-access-heading">Quick Access</h3>
+      <div class="quick-access-grid">
+        <!-- 1. Grades -->
+        <div class="qa-card qa-purple" onclick="showFeesGradesView()">
+          <div class="qa-icon icon-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4>Grades</h4>
+            <p>View all grades</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+
+        <!-- 2. Sections -->
+        <div class="qa-card qa-blue" onclick="showFeesSectionsView()">
+          <div class="qa-icon icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4>Sections</h4>
+            <p>View all sections</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+
+        <!-- 3. All Students -->
+        <div class="qa-card qa-green" onclick="showFeesStudentsViewAll()">
+          <div class="qa-icon icon-green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4 style="color: #10b981;">All Students</h4>
+            <p>View student list</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+
+        <!-- 4. Add Student Fee -->
+        <div class="qa-card qa-orange" onclick="openAddStudentFeeModal()">
+          <div class="qa-icon icon-orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M16 12h.01"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4>Add Student Fee</h4>
+            <p>Create new fee</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+
+        <!-- 5. Paid Fees -->
+        <div class="qa-card qa-blue" onclick="showFeesByFilter('paid')">
+          <div class="qa-icon icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4>Paid Fees</h4>
+            <p>View paid fees</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+
+        <!-- 6. Pending Fees -->
+        <div class="qa-card qa-orange" onclick="showFeesByFilter('pending')">
+          <div class="qa-icon icon-orange">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="qa-content">
+            <h4>Pending Fees</h4>
+            <p>View pending fees</p>
+          </div>
+          <span class="qa-arrow">&rarr;</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Breadcrumbs bar (Shows when drilling down into Grade/Section) -->
+    <div id="feesBreadcrumbBar" class="fees-breadcrumb-bar hidden" style="margin-top: 1rem;">
+      <span class="crumb-item active" onclick="resetFeesNav()">Fees Overview</span>
+      <span id="crumbGrade" class="crumb-item hidden"></span>
+      <span id="crumbSection" class="crumb-item hidden"></span>
+    </div>
+
+    <!-- ADMIN HIERARCHICAL VIEW CONTAINER -->
+    <div id="adminFeesContainer" class="admin-fees-container" style="margin-top: 1.5rem;">
+      
+      <!-- LEVEL 1: GRADES GRID (Nursery to Grade 12) -->
+      <div id="feesGradesView" class="fees-grades-view hidden">
+        <div class="fees-section-title">
+          <h3>Select Grade</h3>
+          <p>Click any grade from Nursery to Grade 12 to view sections and manage student fees.</p>
+        </div>
+        <div id="feesGradesGrid" class="fees-grades-grid">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- LEVEL 2: SECTIONS VIEW -->
+      <div id="feesSectionsView" class="fees-sections-view hidden">
+        <div class="fees-section-title">
+          <h3 id="feesSelectedGradeTitle">Grade Sections</h3>
+          <p>Select a section to view student list and record or manage student fees.</p>
+        </div>
+        <div id="feesSectionsGrid" class="fees-sections-grid">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- LEVEL 3: SECTION STUDENTS & FEES PAGE -->
+      <div id="feesStudentsView" class="fees-students-view hidden">
+        <!-- Section Banner Card -->
+        <div class="fees-section-banner">
+          <div class="banner-left">
+            <div class="banner-badge" id="feesSectionBadge">Grade 8 • Sec A</div>
+            <div>
+              <h2 id="feesSectionTitle">Section A — Students &amp; Fees</h2>
+              <p id="feesSectionSub">Enrolled Students: <strong id="feesSecStudentCount">0</strong> | Total Paid: <strong id="feesSecPaidCount">0</strong> | Pending Dues: <strong id="feesSecPendingCount">0</strong></p>
+            </div>
+          </div>
+          <button type="button" class="fees-btn-add-primary" onclick="openAddStudentFeeModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Student Fee
+          </button>
+        </div>
+
+        <!-- Student Search & Filter Bar -->
+        <div class="fees-filter-toolbar">
+          <div class="fees-tabs">
+            <button type="button" class="fees-filter-btn active" data-filter="all" onclick="filterSectionStudents('all', this)">All Students</button>
+            <button type="button" class="fees-filter-btn" data-filter="pending" onclick="filterSectionStudents('pending', this)">Pending Fees</button>
+            <button type="button" class="fees-filter-btn" data-filter="paid" onclick="filterSectionStudents('paid', this)">Paid</button>
+          </div>
+          <div class="fees-search">
+            <input type="text" id="feesStudentSearch" placeholder="Search student by name or roll #..." oninput="renderSectionStudentsTable()" />
+          </div>
+        </div>
+
+        <!-- Students Fee Table -->
+        <div class="fees-table-wrapper">
+          <table class="fees-data-table">
+            <thead>
+              <tr>
+                <th>Roll #</th>
+                <th>Student Name</th>
+                <th>Category</th>
+                <th>Fee Title</th>
+                <th class="col-num">Total Fee (₹)</th>
+                <th class="col-num">Paid (₹)</th>
+                <th class="col-num">Due (₹)</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="feesStudentsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PARENT VIEW CONTAINER -->
+    <div id="parentFeesContainer" class="parent-fees-container hidden" style="margin-top: 1.5rem;">
+      <div class="list-card fees-list-card">
+        <div class="fees-table-wrapper">
+          <table class="fees-data-table">
+            <thead>
+              <tr>
+                <th>Fee Title</th>
+                <th>Category</th>
+                <th>Term / Period</th>
+                <th class="col-num">Amount (₹)</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="parentFeesTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ADD STUDENT FEE MODAL FOR ADMINS -->
+<div id="addStudentFeeModal" class="fees-modal-backdrop hidden">
+  <div class="fees-modal-dialog">
+    <div class="fees-modal-header">
+      <h3>Add Student Fee Record</h3>
+      <button type="button" class="fees-modal-close" onclick="closeAddStudentFeeModal()">&times;</button>
+    </div>
+    <form id="addStudentFeeForm" onsubmit="handleSaveStudentFee(event)">
+      <div class="fees-modal-body">
+        <div class="form-row-2">
+          <div>
+            <label for="feeModalGrade">Grade</label>
+            <select id="feeModalGrade" required onchange="updateModalSections()">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label for="feeModalSection">Section</label>
+            <select id="feeModalSection" required>
+              <option value="Section A">Section A</option>
+              <option value="Section B">Section B</option>
+              <option value="Section C">Section C</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <label for="feeModalStudentName">Student Name / Roll #</label>
+            <input type="text" id="feeModalStudentName" placeholder="e.g. Aarav Sharma (Roll #101)" required />
+          </div>
+          <div>
+            <label for="feeModalCategory">Fee Category</label>
+            <select id="feeModalCategory" required>
+              <option value="Tuition Fee">Tuition Fee</option>
+              <option value="Admission Fee">Admission Fee</option>
+              <option value="Transport Fee">Transport Fee</option>
+              <option value="Exam Fee">Exam Fee</option>
+              <option value="Activities & Sports">Activities &amp; Sports</option>
+              <option value="Computer & Lab Fee">Computer &amp; Lab Fee</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <label for="feeModalTitle">Fee Title / Description</label>
+            <input type="text" id="feeModalTitle" placeholder="e.g. Instalment 3 Tuition Fee" required />
+          </div>
+          <div>
+            <label for="feeModalAmount">Amount (₹)</label>
+            <input type="number" id="feeModalAmount" placeholder="e.g. 15000" min="1" required />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div>
+            <label for="feeModalDueDate">Due Date</label>
+            <input type="date" id="feeModalDueDate" required />
+          </div>
+          <div>
+            <label for="feeModalStatus">Payment Status</label>
+            <select id="feeModalStatus" required>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="fees-modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeAddStudentFeeModal()">Cancel</button>
+        <button type="submit" class="gform-create-btn" style="margin: 0; width: auto; padding: 0.6rem 1.2rem;">Save Fee Record</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<section id="timetableSection" class="page-section hidden">
+  <div class="section-header section-header-compact">
+    <div>
+      <p class="eyebrow">Timetable</p>
+      <h1>Weekly schedule</h1>
+    </div>
+  </div>
+        <div class="page-body">
+          <div class="list-card timetable-card">
+            <div class="timetable-table-wrapper">
+              <table id="timetableTable">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="announcementsSection" class="page-section hidden">
+        <div class="section-header section-header-compact">
+          <div>
+            <p class="eyebrow">Announcements</p>
+            <h1>School updates</h1>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="content-split">
+            <aside class="content-split-side">
+              <div class="list-card announcement-card">
+                <h3 class="panel-title">Post update</h3>
+                <div class="announcement-form">
+                  <label for="announcementInput">Message</label>
+                  <textarea id="announcementInput" rows="4" placeholder="Share news, reminders, or updates."></textarea>
+                  <label for="announcementClassInput">Class</label>
+                  <select id="announcementClassInput">
+                    <option value="">Select class</option>
+                  </select>
+                  <button id="addAnnouncementBtn" type="button">Post Announcement</button>
+                </div>
+              </div>
+            </aside>
+            <div class="content-split-main">
+              <div class="list-card announcements-list-card">
+                <h3 class="panel-title">Recent announcements</h3>
+                <div id="announcementsList" class="announcements-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="notesSection" class="page-section hidden">
+        <div class="section-header section-header-compact">
+          <div>
+            <p class="eyebrow">Notes</p>
+            <h1>Study notes</h1>
+          </div>
+        </div>
+        <div class="page-body">
+          <div class="content-split">
+            <aside class="content-split-side">
+              <div class="list-card notes-card">
+                <h3 class="panel-title">New note</h3>
+                <div class="notes-form">
+                  <label for="noteTitleInput">Note title</label>
+                  <input id="noteTitleInput" type="text" placeholder="Enter note title" />
+                  <label for="noteContentInput">Note details</label>
+                  <textarea id="noteContentInput" rows="4" placeholder="Write your notes here..."></textarea>
+                  <button id="addNoteBtn" type="button">Save Note</button>
+                </div>
+              </div>
+            </aside>
+            <div class="content-split-main">
+              <div class="list-card notes-list-card">
+                <h3 class="panel-title">Your notes</h3>
+                <div id="notesList" class="notes-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="adminSection" class="page-section hidden admin-page">
+
+
+        <div class="admin-layout">
+
+
+          <div class="admin-content">
+            <div id="adminPanelUsers" class="admin-panel active um-container">
+              <!-- Top Header Bar -->
+              <div class="um-header">
+                <div class="um-header-title-group">
+                  <h2 class="um-title">User Management</h2>
+                  <p class="um-subtitle">Manage system users, roles and permissions</p>
+                </div>
+                <button type="button" id="umAddNewUserBtn" class="um-add-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                  Add New User
+                </button>
+              </div>
+
+              <!-- Main Grid Layout: Full Width Panel -->
+              <div class="um-grid">
+                <!-- Main Full Width Panel -->
+                <div class="um-main-panel">
+                  <!-- 5 Stats Cards Row -->
+                  <div class="um-stats-row">
+                    <div class="um-stat-card">
+                      <div class="um-stat-icon icon-total">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                      </div>
+                      <div class="um-stat-content">
+                        <span id="umStatTotal" class="um-stat-value">0</span>
+                        <span class="um-stat-label">Total Users</span>
+                      </div>
+                    </div>
+
+                    <div class="um-stat-card">
+                      <div class="um-stat-icon" style="background: rgba(16,185,129,0.12); color: #10b981;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                        </svg>
+                      </div>
+                      <div class="um-stat-content">
+                        <span id="umStatStudents" class="um-stat-value">0</span>
+                        <span class="um-stat-label">Students</span>
+                      </div>
+                    </div>
+
+                    <div class="um-stat-card">
+                      <div class="um-stat-icon" style="background: rgba(124,58,237,0.12); color: #7c3aed;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                      </div>
+                      <div class="um-stat-content">
+                        <span id="umStatTeachers" class="um-stat-value">0</span>
+                        <span class="um-stat-label">Teachers</span>
+                      </div>
+                    </div>
+
+                    <div class="um-stat-card">
+                      <div class="um-stat-icon icon-staff">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                      </div>
+                      <div class="um-stat-content">
+                        <span id="umStatStaff" class="um-stat-value">0</span>
+                        <span class="um-stat-label">Staff</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Controls Row: Tabs & Search/Filter -->
+                  <div class="um-controls-row">
+                    <div class="um-tabs-group">
+                      <button type="button" class="um-tab-btn active" data-role="all">All Users</button>
+                      <button type="button" class="um-tab-btn" data-role="Student">Students</button>
+                      <button type="button" class="um-tab-btn" data-role="Teacher">Teachers</button>
+                      <button type="button" class="um-tab-btn" data-role="Staff">Staff</button>
+                      <button type="button" class="um-tab-btn" data-role="Principal">Principals</button>
+                    </div>
+                    <div class="um-search-filter-group">
+                      <div class="um-search-input-wrapper">
+                        <svg class="um-search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="11" cy="11" r="8"></circle>
+                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="umSearchInput" placeholder="Search users..." />
+                      </div>
+                      <button type="button" id="umFilterToggleBtn" class="um-filter-btn" title="Filter options">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Table Card -->
+                  <div class="um-table-card">
+                    <div id="usersList" class="users-list um-table-container"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Centered Modal Dialog for Create / Edit User -->
+              <div id="umUserModal" class="um-modal-overlay hidden" tabindex="-1" role="dialog" aria-modal="true">
+                <div class="um-modal-card">
+                  <div class="um-modal-header">
+                    <div class="um-modal-header-info">
+                      <div class="um-form-header-icon" id="umFormHeaderIcon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <line x1="19" y1="8" x2="19" y2="14"></line>
+                          <line x1="16" y1="11" x2="22" y2="11"></line>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 id="umFormTitle" class="um-form-title">Create New User</h3>
+                        <p id="umFormSubtitle" class="um-form-subtitle">Add a new user to the system</p>
+                      </div>
+                    </div>
+                    <button type="button" id="umCloseModalBtn" class="um-modal-close-btn" aria-label="Close dialog">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <form id="umUserForm" class="um-form" autocomplete="off" onsubmit="return false;">
+                    <input type="hidden" id="umEditingUserId" value="" />
+
+                    <div class="um-form-grid">
+                      <div class="um-form-group">
+                        <label for="newUsername">Username <span class="req">*</span></label>
+                        <div class="um-input-wrapper">
+                          <svg class="um-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                          <input type="text" id="newUsername" placeholder="Enter username" />
+                        </div>
+                      </div>
+
+                      <div class="um-form-group">
+                        <label for="newDisplayName">Display Name <span class="req">*</span></label>
+                        <div class="um-input-wrapper">
+                          <svg class="um-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                          <input type="text" id="newDisplayName" placeholder="Enter full name" />
+                        </div>
+                      </div>
+
+                      <div class="um-form-group">
+                        <label for="newPassword">Password <span class="req">*</span></label>
+                        <div class="um-input-wrapper">
+                          <svg class="um-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                          </svg>
+                          <input type="password" id="newPassword" placeholder="Enter password" />
+                          <button type="button" class="um-password-toggle" onclick="togglePasswordVisibility('newPassword', this)" title="Toggle password view">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="um-form-group">
+                        <label for="newConfirmPassword">Confirm Password <span class="req">*</span></label>
+                        <div class="um-input-wrapper">
+                          <svg class="um-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                          </svg>
+                          <input type="password" id="newConfirmPassword" placeholder="Confirm password" />
+                          <button type="button" class="um-password-toggle" onclick="togglePasswordVisibility('newConfirmPassword', this)" title="Toggle password view">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                              <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div class="um-form-group">
+                        <label for="newEmail">Email / Mobile <span class="req">*</span></label>
+                        <div class="um-input-wrapper">
+                          <svg class="um-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                          </svg>
+                          <input type="text" id="newEmail" placeholder="Enter email or mobile number" />
+                          <input type="hidden" id="newPhone" value="" />
+                        </div>
+                      </div>
+
+                      <div class="um-form-group">
+                        <label for="newRole">Role <span class="req">*</span></label>
+                        <div class="um-select-wrapper">
+                          <select id="newRole" onchange="handleRoleChangeInModal(this.value)">
+                            <option value="" disabled selected>Select role</option>
+                            <option value="Student">Student</option>
+                            <option value="Teacher">Teacher</option>
+                            <option value="Parent">Parent</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Principal">Principal</option>
+                          </select>
+                          <svg class="um-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="um-form-group hidden" id="umGradeGroup">
+                        <label for="newGrade">Grade <span class="req">*</span></label>
+                        <div class="um-select-wrapper">
+                          <select id="newGrade">
+                            <option value="Grade 6">Grade 6</option>
+                            <option value="Grade 7">Grade 7</option>
+                            <option value="Grade 8" selected>Grade 8</option>
+                            <option value="Grade 9">Grade 9</option>
+                            <option value="Grade 10">Grade 10</option>
+                            <option value="Grade 11">Grade 11</option>
+                            <option value="Grade 12">Grade 12</option>
+                          </select>
+                          <svg class="um-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="um-form-group hidden" id="umSectionGroup">
+                        <label for="newSection">Section <span class="req">*</span></label>
+                        <div class="um-select-wrapper">
+                          <select id="newSection">
+                            <option value="Section A" selected>Section A</option>
+                            <option value="Section B">Section B</option>
+                            <option value="Section C">Section C</option>
+                          </select>
+                          <svg class="um-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </div>
+                      </div>
+
+                      <div class="um-form-group um-full-width-field">
+                        <label for="newStatus">Status</label>
+                        <div class="um-select-wrapper">
+                          <select id="newStatus">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                          </select>
+                          <svg class="um-select-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="um-modal-footer">
+                      <button type="button" id="umCancelModalBtn" class="um-btn-reset">Cancel</button>
+                      <button id="createUserBtn" type="button" class="um-btn-submit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <line x1="19" y1="8" x2="19" y2="14"></line>
+                          <line x1="16" y1="11" x2="22" y2="11"></line>
+                        </svg>
+                        <span id="umSubmitBtnText">Create User</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div id="adminPanelStaff" class="admin-panel hidden">
+              <div class="admin-card">
+                <h3>Staff accounts</h3>
+                <p class="admin-panel-desc">View and manage staff user accounts.</p>
+                <div id="staffUsersList" class="users-list admin-role-users-list" data-role="Staff"></div>
+              </div>
+            </div>
+
+            <div id="adminPanelParents" class="admin-panel hidden">
+              <div class="admin-card parent-card">
+                <h3>Parent contacts</h3>
+                <div class="parent-form">
+                  <label for="parentNameInput">Parent name</label>
+                  <input id="parentNameInput" type="text" placeholder="e.g. Mrs. Patel" />
+                  <label for="parentPhoneInput">Phone</label>
+                  <input id="parentPhoneInput" type="tel" placeholder="e.g. +1 555 123 4567" />
+                  <label for="parentEmailInput">Email</label>
+                  <input id="parentEmailInput" type="email" placeholder="parent@example.com" />
+                  <label for="parentGroupSelect">Belongs to group</label>
+                  <select id="parentGroupSelect">
+                    <option value="">Select a group</option>
+                  </select>
+                  <button id="addParentBtn" type="button">Add Parent</button>
+                </div>
+                <div class="parents-list-wrapper">
+                  <h4>Registered parents</h4>
+                  <div id="parentsList" class="parents-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="adminPanelClasses" class="admin-panel hidden">
+              <div id="principalDashboardPanel" class="admin-card principal-dashboard-panel">
+                <h3>Class overview</h3>
+                <p class="admin-panel-desc">Search and filter school-wide data by class.</p>
+                <div class="principal-controls">
+                  <label class="dashboard-search" for="principalSearchInput">
+                    <span></span>
+                    <input id="principalSearchInput" type="search" placeholder="Search tasks, exams, students..." />
+                  </label>
+                  <label for="principalFilterSelect">Filter by class</label>
+                  <select id="principalFilterSelect">
+                    <option value="">All classes</option>
+                    <option value="8A">8A</option>
+                    <option value="8B">8B</option>
+                    <option value="9A">9A</option>
+                    <option value="9B">9B</option>
+                    <option value="10A">10A</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div id="adminPanelGroups" class="admin-panel hidden">
+              <div class="admin-card">
+                <h3>Group management</h3>
+                <p class="admin-panel-desc">Create and manage messaging groups from the Groups page.</p>
+                <button type="button" class="action-btn action-primary admin-goto-btn" data-goto-tab="groups">Open
+                  Groups</button>
+              </div>
+            </div>
+
+            <div id="adminPanelExams" class="admin-panel hidden">
+              <div class="admin-card">
+                <h3>Exam management</h3>
+                <p class="admin-panel-desc">Schedule and review exams from the Exam Planner.</p>
+                <button type="button" class="action-btn action-primary admin-goto-btn" data-goto-tab="exam">Open Exam
+                  Planner</button>
+              </div>
+            </div>
+
+            <div id="adminPanelAnnouncements" class="admin-panel hidden">
+              <div class="admin-card">
+                <h3>Announcements</h3>
+                <p class="admin-panel-desc">Post and review school-wide announcements.</p>
+                <button type="button" class="action-btn action-primary admin-goto-btn"
+                  data-goto-tab="announcements">Open Announcements</button>
+              </div>
+            </div>
+
+            <div id="adminPanelReports" class="admin-panel hidden">
+              <div class="admin-card">
+                <h3>School reports</h3>
+                <p class="admin-panel-desc">Use class filters and dashboard metrics for at-a-glance reporting.</p>
+                <div class="admin-report-stats">
+                  <div class="mini-card mini-card-compact">
+                    <p>Total tasks</p>
+                    <strong id="adminReportTasks">0</strong>
+                  </div>
+                  <div class="mini-card mini-card-compact">
+                    <p>Total exams</p>
+                    <strong id="adminReportExams">0</strong>
+                  </div>
+                  <div class="mini-card mini-card-compact">
+                    <p>Total groups</p>
+                    <strong id="adminReportGroups">0</strong>
+                  </div>
+                  <div class="mini-card mini-card-compact">
+                    <p>Total users</p>
+                    <strong id="adminReportUsers">0</strong>
+                  </div>
+                </div>
+                <button type="button" class="action-btn action-edit admin-goto-btn" data-goto-tab="dashboard">View
+                  Dashboard</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Attendance & Grades Section -->
+      <section id="attendanceSection" class="page-section hidden" style="padding: 1.5rem; box-sizing: border-box;">
+
+        <!-- Header -->
+        <div style="margin-bottom: 1.5rem;">
+          <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; margin: 0 0 0.25rem 0;">Attendance & Grades</h1>
+          <p style="font-size: 0.9rem; color: #64748b; margin: 0;">Mark attendance and enter grades for your classes.</p>
+        </div>
+
+        <!-- Top Controls Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 0.85rem 1.25rem; border-radius: 14px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.03); margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          
+          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <!-- Date Select -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.45rem 0.85rem;">
+              <span style="font-size: 1rem; color: #64748b;">📅</span>
+              <input type="date" id="attGradesDatePicker" value="2026-10-01" onchange="attGradesOnDateChange(this.value)" style="border: none; background: transparent; font-weight: 600; color: #334155; font-size: 0.9rem; outline: none; cursor: pointer;" />
+            </div>
+
+            <!-- Class Select -->
+            <div style="display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.45rem 0.85rem;">
+              <span style="font-size: 1rem; color: #64748b;">👥</span>
+              <select id="attGradesClassSelect" onchange="attGradesOnClassChange(this.value)" style="border: none; background: transparent; font-weight: 600; color: #334155; font-size: 0.9rem; outline: none; cursor: pointer;">
+                <option value="Grade 8 - Section A">Grade 8 - A</option>
+                <option value="Grade 8 - Section B">Grade 8 - B</option>
+                <option value="Grade 8 - Section C">Grade 8 - C</option>
+                <option value="Grade 9 - Section A">Grade 9 - A</option>
+                <option value="Grade 10 - Section A">Grade 10 - A</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Mode Switcher Pill -->
+          <div style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <button type="button" id="attModeAttendanceBtn" onclick="setAttGradesMode('attendance')" style="padding: 0.45rem 1.25rem; font-size: 0.88rem; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b;">Attendance</button>
+            <button type="button" id="attModeGradesBtn" onclick="setAttGradesMode('grades')" style="padding: 0.45rem 1.25rem; font-size: 0.88rem; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; background: #2563eb; color: #ffffff; box-shadow: 0 2px 6px rgba(37,99,235,0.25);">Grades</button>
+          </div>
+
+        </div>
+
+        <!-- Main Content Area: Roster Table (Left) + Quick Summary & Actions Sidebar (Right) -->
+        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start;">
+
+          <!-- Main Table Card -->
+          <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.85rem;">
+              <div>
+                <h2 id="attGradesClassHeader" style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin: 0 0 0.2rem 0;">Grade 8 - A</h2>
+                <span id="attGradesTotalStudentsText" style="font-size: 0.82rem; color: #64748b; font-weight: 500;">Total Students: 32</span>
+              </div>
+
+              <!-- Search Bar -->
+              <div style="position: relative; width: 220px;">
+                <input type="text" id="attGradesSearchInput" placeholder="Search student..." oninput="attGradesFilterStudents(this.value)" style="width: 100%; padding: 0.45rem 0.75rem 0.45rem 2rem; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.85rem; box-sizing: border-box;" />
+                <span style="position: absolute; left: 0.6rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;">🔍</span>
+              </div>
+            </div>
+
+            <!-- Roster Table Container -->
+            <div style="overflow-x: auto;">
+              <table id="attGradesRosterTable" style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.88rem;">
+                <thead id="attGradesTableHead"></thead>
+                <tbody id="attGradesTableBody"></tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- Right Sidebar -->
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            
+            <!-- Quick Summary Card -->
+            <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+              <h3 style="font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0 0 1rem 0;">Quick Summary</h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                
+                <!-- Total Students -->
+                <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 0.85rem; background: #f0fdf4; border-radius: 12px; border: 1px solid #dcfce7;">
+                  <div style="width: 36px; height: 36px; border-radius: 10px; background: #22c55e; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">👥</div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: #166534; font-weight: 600;">Total Students</div>
+                    <div id="summaryTotalCount" style="font-size: 1.2rem; font-weight: 800; color: #15803d; line-height: 1.2;">32</div>
+                  </div>
+                </div>
+
+                <!-- Present Today -->
+                <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 0.85rem; background: #eff6ff; border-radius: 12px; border: 1px solid #dbeafe;">
+                  <div style="width: 36px; height: 36px; border-radius: 10px; background: #2563eb; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">✓</div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: #1e40af; font-weight: 600;">Present Today</div>
+                    <div id="summaryPresentCount" style="font-size: 1.1rem; font-weight: 800; color: #1d4ed8; line-height: 1.2;">30 <span style="font-size: 0.75rem; font-weight: 600; opacity: 0.85;">(93.8%)</span></div>
+                  </div>
+                </div>
+
+                <!-- Absent Today -->
+                <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 0.85rem; background: #fef2f2; border-radius: 12px; border: 1px solid #fee2e2;">
+                  <div style="width: 36px; height: 36px; border-radius: 10px; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">✕</div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: #991b1b; font-weight: 600;">Absent Today</div>
+                    <div id="summaryAbsentCount" style="font-size: 1.1rem; font-weight: 800; color: #b91c1c; line-height: 1.2;">2 <span style="font-size: 0.75rem; font-weight: 600; opacity: 0.85;">(6.2%)</span></div>
+                  </div>
+                </div>
+
+                <!-- Late Today -->
+                <div style="display: flex; align-items: center; gap: 0.85rem; padding: 0.65rem 0.85rem; background: #faf5ff; border-radius: 12px; border: 1px solid #f3e8ff;">
+                  <div style="width: 36px; height: 36px; border-radius: 10px; background: #a855f7; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">🕒</div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: #6b21a8; font-weight: 600;">Late Today</div>
+                    <div id="summaryLateCount" style="font-size: 1.1rem; font-weight: 800; color: #7e22ce; line-height: 1.2;">1 <span style="font-size: 0.75rem; font-weight: 600; opacity: 0.85;">(3.1%)</span></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div style="background: #fff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 1.25rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+              <h3 style="font-size: 1rem; font-weight: 800; color: #0f172a; margin: 0 0 0.85rem 0;">Quick Actions</h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <button type="button" onclick="setAttGradesMode('attendance')" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s;">
+                  <span>📅</span> Mark Attendance
+                </button>
+                <button type="button" onclick="setAttGradesMode('grades')" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s;">
+                  <span>📝</span> Enter Grades
+                </button>
+                <button type="button" onclick="viewAttGradesReport()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s;">
+                  <span>📄</span> View Reports
+                </button>
+                <button type="button" onclick="downloadAttGradesReport()" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.85rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.85rem; font-weight: 600; color: #334155; cursor: pointer; text-align: left; transition: all 0.15s;">
+                  <span>📥</span> Download Report
+                </button>
+              </div>
+            </div>
+
+            <!-- Instructions Card -->
+            <div style="background: #eff6ff; border-radius: 16px; border: 1px solid #dbeafe; padding: 1rem 1.25rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem; color: #1d4ed8; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                <span>ℹ️</span> Instructions
+              </div>
+              <p style="font-size: 0.78rem; color: #3b82f6; margin: 0; line-height: 1.5;">
+                • Select a date and class to view students.<br/>
+                • Toggle between Attendance and Grades using top right pill.<br/>
+                • Changes save automatically to local records.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Subject Selection Section -->
+      <section id="subjectSelectionSection" class="page-section hidden">
+        <div class="section-header">
+          <div class="section-header-left">
+            <span class="icon">📚</span>
+            <h2>Subject Selection</h2>
+          </div>
+        </div>
+        <div class="list-card" style="padding: 1.5rem;">
+          <h3>Select your active subjects</h3>
+          <p class="muted-text" style="margin-bottom: 1.5rem;">Choose elective subjects to customize your study path.</p>
+          <div class="subject-selection-list" style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+            <label class="subject-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" checked style="width: 20px; height: 20px;" />
+              <span>Mathematics (Core)</span>
+            </label>
+            <label class="subject-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" checked style="width: 20px; height: 20px;" />
+              <span>Physics</span>
+            </label>
+            <label class="subject-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" checked style="width: 20px; height: 20px;" />
+              <span>Chemistry</span>
+            </label>
+            <label class="subject-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" style="width: 20px; height: 20px;" />
+              <span>Computer Science (Elective)</span>
+            </label>
+            <label class="subject-label" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: #fff; border: 1px solid rgba(0,0,0,0.05); border-radius: 12px; cursor: pointer;">
+              <input type="checkbox" style="width: 20px; height: 20px;" />
+              <span>Biology (Elective)</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Student Profile Section -->
+      <section id="profileSection" class="page-section hidden">
+        <div class="section-header">
+          <div class="section-header-left">
+            <span class="icon">👤</span>
+            <h2>Student Profile</h2>
+          </div>
+        </div>
+        <div class="list-card profile-card">
+          <div class="profile-top">
+            <div style="display: flex; align-items: center; gap: 1.5rem;">
+              <div id="profileAvatarEl" class="profile-avatar">S</div>
+              <div>
+                <h2 id="profileNameEl">Student Name</h2>
+                <p id="profileEmailEl" class="muted-text">student@school.com</p>
+              </div>
+            </div>
+            <span class="role-badge" id="profileRoleBadge">Student</span>
+          </div>
+          <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+            <div>
+              <strong>Class / Section</strong>
+              <p id="profileClassEl" style="margin-top: 0.5rem; color: var(--muted);">Class 10-A</p>
+            </div>
+            <div>
+              <strong>Admission Number</strong>
+              <p style="margin-top: 0.5rem; color: var(--muted);">VIB-2024-8849</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Reports Section -->
+      <section id="reportsSection" class="page-section hidden">
+        <div class="report-page-container">
+          <!-- Page Header -->
+          <div class="report-page-header">
+            <div class="report-header-title-group">
+              <span class="report-header-icon">📈</span>
+              <div>
+                <h2>Academic Term Progress Report</h2>
+                <p class="report-header-sub">Role-based official evaluation & subject assessment</p>
+              </div>
+            </div>
+            <div class="report-header-actions">
+              <button type="button" id="printReportBtn" class="report-print-btn" onclick="window.print()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Print / Export Report
+              </button>
+            </div>
+          </div>
+
+          <!-- Role Access Context & Filter Bar -->
+          <div id="reportRoleContextBar" class="report-context-bar">
+            <!-- Student / Parent Notice Banner -->
+            <div id="reportAccessNotice" class="report-access-notice">
+              <span class="access-notice-icon">🔒</span>
+              <span id="reportAccessNoticeText">Viewing student progress report</span>
+            </div>
+
+            <!-- Parent Multi-Child Selector (Visible ONLY for Parent with >1 child) -->
+            <div id="reportParentChildSelectorContainer" class="report-parent-selector hidden">
+              <span class="selector-label">Select Linked Child:</span>
+              <div id="reportParentChildPills" class="report-child-pills"></div>
+            </div>
+
+            <!-- Admin / Teacher Class & Student Controls (Visible ONLY for Admin / Staff / Teacher) -->
+            <div id="reportAdminControls" class="report-admin-controls hidden">
+              <div class="control-group">
+                <label for="reportClassFilterSelect">Class:</label>
+                <select id="reportClassFilterSelect" class="report-select">
+                  <option value="All">All Classes</option>
+                  <option value="8A">Class 8A</option>
+                  <option value="8B">Class 8B</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label for="reportStudentSelect">Select Student:</label>
+                <select id="reportStudentSelect" class="report-select"></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Term Tabs Selector -->
+          <div class="report-term-tabs-row">
+            <div id="reportTermTabs" class="report-term-tabs" role="tablist">
+              <button type="button" class="report-term-tab active" data-term="Term 1">Term 1</button>
+              <button type="button" class="report-term-tab" data-term="Term 2">Term 2</button>
+              <button type="button" class="report-term-tab" data-term="Annual Term">Annual Examination</button>
+            </div>
+          </div>
+
+          <!-- Printable Term Progress Report Card -->
+          <div id="reportCard" class="report-card-main">
+            <!-- School Brand Sub-header -->
+            <div class="report-brand-header">
+              <div class="report-brand-left">
+                <span class="report-brand-logo">V</span>
+                <div>
+                  <h3>VIBGYOR GROUP OF SCHOOLS</h3>
+                  <small>OFFICIAL ACADEMIC PROGRESS REPORT</small>
+                </div>
+              </div>
+              <div class="report-brand-right">
+                <span id="reportTermBadge" class="report-status-chip">Term 1</span>
+              </div>
+            </div>
+
+            <!-- Student Profile Header Banner -->
+            <div class="report-student-banner">
+              <div class="report-avatar" id="reportStudentAvatar">AS</div>
+              <div class="report-student-meta">
+                <h3 id="reportStudentName">Aarav Sharma</h3>
+                <div class="report-meta-grid">
+                  <div class="meta-item">
+                    <span class="meta-label">Class & Section:</span>
+                    <strong id="reportStudentClass">8A</strong>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Roll Number:</span>
+                    <strong id="reportStudentRoll">VIB-2026-8801</strong>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Academic Year:</span>
+                    <strong id="reportAcademicYear">2025 - 2026</strong>
+                  </div>
+                  <div class="meta-item">
+                    <span class="meta-label">Issue Date:</span>
+                    <strong id="reportIssueDate">October 15, 2025</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Key Summary Performance Metrics (4 Stat Cards) -->
+            <div class="report-metrics-grid">
+              <div class="report-metric-card">
+                <div class="metric-icon-box score">📊</div>
+                <div class="metric-info">
+                  <span class="metric-label">Overall Score</span>
+                  <h3 id="reportOverallPercentage">--%</h3>
+                  <div class="metric-progress-bar">
+                    <div id="reportOverallProgressBar" class="metric-progress-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="report-metric-card">
+                <div class="metric-icon-box grade">🏅</div>
+                <div class="metric-info">
+                  <span class="metric-label">Cumulative Grade</span>
+                  <h3 id="reportOverallGrade">--</h3>
+                  <span id="reportPerformanceStatus" class="metric-sub-badge">Distinction</span>
+                </div>
+              </div>
+
+              <div class="report-metric-card">
+                <div class="metric-icon-box attendance">📅</div>
+                <div class="metric-info">
+                  <span class="metric-label">Attendance Rate</span>
+                  <h3 id="reportAttendanceRate">--%</h3>
+                  <span class="metric-sub-badge success">Regular</span>
+                </div>
+              </div>
+
+              <div class="report-metric-card">
+                <div class="metric-icon-box conduct">⭐</div>
+                <div class="metric-info">
+                  <span class="metric-label">Student Conduct</span>
+                  <h3 id="reportConduct">Exemplary</h3>
+                  <span class="metric-sub-badge">Satisfactory</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subject Assessment Table -->
+            <div class="report-table-wrapper">
+              <h4 class="report-table-title">Subject Assessment & Marks Breakdown</h4>
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Max Marks</th>
+                    <th>Marks Obtained</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                    <th>Subject Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="reportSubjectsBody">
+                  <!-- Generated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Teacher Remarks & Sign-off Section -->
+            <div class="report-remarks-grid">
+              <div class="remarks-card">
+                <div class="remarks-header">
+                  <span class="remarks-icon">💬</span>
+                  <h4>Class Teacher Remarks</h4>
+                </div>
+                <p id="reportTeacherRemarks" class="remarks-text">Loading teacher remarks...</p>
+              </div>
+
+              <div class="remarks-card sign-off">
+                <div class="remarks-header">
+                  <span class="remarks-icon">🏛️</span>
+                  <h4>Principal & Headmaster Seal</h4>
+                </div>
+                <p id="reportHeadmasterRemarks" class="remarks-text">Loading principal remarks...</p>
+                <div class="seal-placeholder">
+                  <span class="seal-stamp">OFFICIALLY VERIFIED</span>
+                  <small>Vibgyor Group of Schools</small>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Student Care Section -->
+      <section id="careSection" class="page-section hidden">
+        <div class="section-header">
+          <div class="section-header-left">
+            <span class="icon"></span>
+            <h2>Student Care</h2>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
+          <div class="list-card" style="padding: 1.5rem;">
+            <h3>Counseling & Support</h3>
+            <p class="muted-text" style="margin-top: 0.5rem; margin-bottom: 1.5rem;">Need someone to talk to? Our school counselors are available daily.</p>
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(79, 98, 255, 0.05); border-radius: 12px;">
+              <strong>Counselor On Duty</strong>
+              <p style="margin-top: 0.25rem;">Mr. John Davis</p>
+              <small class="muted-text">Hours: 9:00 AM - 3:00 PM</small>
+            </div>
+          </div>
+          <div class="list-card" style="padding: 1.5rem;">
+            <h3>Wellbeing Resources</h3>
+            <ul style="padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+              <li>Mindfulness and meditation guides</li>
+              <li>Exam stress management tips</li>
+              <li>Healthy study habits checklist</li>
+              <li>Peer-led support group updates</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- School Resources Section -->
+      <section id="resourcesSection" class="page-section hidden">
+        <div class="section-header">
+          <div class="section-header-left">
+            <span class="icon">📁</span>
+            <h2>School Resources</h2>
+          </div>
+        </div>
+        <div class="list-card" style="padding: 1.5rem;">
+          <h3>Resource Downloads</h3>
+          <div class="resource-downloads-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.25rem; margin-top: 1.5rem;">
+            <a href="#" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid rgba(0,0,0,0.05); border-radius: 14px; background: #fff;">
+              <span style="font-size: 2rem;">🗓️</span>
+              <div>
+                <strong style="display: block;">Academic Calendar 2026</strong>
+                <small class="muted-text">PDF | 1.2 MB</small>
+              </div>
+            </a>
+            <a href="#" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid rgba(0,0,0,0.05); border-radius: 14px; background: #fff;">
+              <span style="font-size: 2rem;">📖</span>
+              <div>
+                <strong style="display: block;">Student Handbook</strong>
+                <small class="muted-text">PDF | 4.5 MB</small>
+              </div>
+            </a>
+            <a href="#" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1rem; padding: 1rem; border: 1px solid rgba(0,0,0,0.05); border-radius: 14px; background: #fff;">
+              <span style="font-size: 2rem;">🧪</span>
+              <div>
+                <strong style="display: block;">Science Lab Guidelines</strong>
+                <small class="muted-text">PDF | 800 KB</small>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+
+  <div id="groupInfoModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="group-info-header">
+        <div>
+          <h2 id="groupInfoTitle">Group details</h2>
+          <p id="groupInfoSubtitle">View and manage group information.</p>
+        </div>
+        <div class="group-info-actions">
+          <button id="openAddParticipantsBtn" type="button" class="action-btn action-edit">Add Participants</button>
+          <button id="groupInfoCallBtn" type="button" class="action-btn action-call">Call</button>
+          <button id="closeGroupInfoBtn" type="button" class="action-btn action-delete">Close</button>
+        </div>
+      </div>
+      <div id="groupInfoMeta"></div>
+      <div id="groupInfoParticipants"></div>
+      <div id="addParticipantsPanel" class="add-participants-panel hidden">
+        <div class="modal-actions">
+          <h3>Add participants</h3>
+          <button id="closeAddParticipantsBtn" type="button" class="action-btn action-delete">Cancel</button>
+        </div>
+        <div id="contactsPickerList" class="contacts-picker-list"></div>
+        <button id="addSelectedParticipantsBtn" type="button" class="button-primary">Add selected</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="notificationPanel" class="notification-panel hidden">
+    <div class="notification-card">
+      <div class="notification-header">
+        <h2>Notifications</h2>
+        <button id="closeNotificationPanelBtn" class="close-btn" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--muted);">&times;</button>
+      </div>
+      <div class="notification-summary">
+        <span id="notificationCountLabel">All caught up</span>
+        <button id="clearNotificationsBtn" style="background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer;">Clear All</button>
+      </div>
+      <div id="notificationList" class="notification-list"></div>
+    </div>
+  </div>
+
+  <div id="editTaskModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>Edit Task</h2>
+      <textarea id="editTaskTextarea" rows="5"></textarea>
+      <div class="modal-actions">
+        <button id="cancelEditTaskBtn" type="button" class="action-btn action-delete">Cancel</button>
+        <button id="saveEditTaskBtn" type="button" class="button-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Folder Overlay -->
+  <div id="folderOverlay" class="folder-overlay hidden">
+    <div class="folder-overlay-content">
+      <button id="folderCloseBtn" class="folder-close-btn" aria-label="Close folder">&times;</button>
+      <h2 id="folderOverlayTitle" class="folder-overlay-title">Folder Name</h2>
+      <div id="folderOverlayGrid" class="folder-overlay-grid"></div>
+    </div>
+  </div>
+
+  <!-- Student Details Overlay -->
+  <div id="studentDetailsOverlay" class="modal-overlay hidden">
+    <div class="modal-card wide-card glassmorphic">
+      <div class="overlay-header">
+        <div class="user-profile-header">
+          <div id="sdAvatar" class="avatar-large">S</div>
+          <div>
+            <h2 id="sdName">Student Name</h2>
+            <p id="sdClassInfo">Grade 10 - Section A</p>
+          </div>
+        </div>
+        <button onclick="closeOverlay('studentDetailsOverlay')" class="close-btn">&times;</button>
+      </div>
+      <div class="overlay-content-split">
+        <nav class="overlay-sidebar" aria-label="Student details navigation">
+          <button class="sidebar-tab active" data-tab="sd-profile">Profile</button>
+          <button class="sidebar-tab" data-tab="sd-attendance">Attendance</button>
+          <button class="sidebar-tab" data-tab="sd-results">Results</button>
+          <button class="sidebar-tab" data-tab="sd-behaviour">Behaviour</button>
+          <button class="sidebar-tab" data-tab="sd-medical">Medical</button>
+          <button class="sidebar-tab" data-tab="sd-fees">Fees</button>
+          <button class="sidebar-tab" data-tab="sd-parents">Parents</button>
+          <button class="sidebar-tab" data-tab="sd-documents">Documents</button>
+        </nav>
+        <div class="overlay-main-content">
+          <!-- Profile Sub-Tab -->
+          <div id="sd-profile" class="sub-tab-content">
+            <h3>Student Profile</h3>
+            <div class="info-grid">
+              <div class="info-item"><strong>Admission Number</strong><p id="sdAdmissionNo">VIB-2026-001</p></div>
+              <div class="info-item"><strong>Email</strong><p id="sdEmail">john@school.com</p></div>
+              <div class="info-item"><strong>Phone</strong><p id="sdPhone">+1 555 123 4567</p></div>
+              <div class="info-item"><strong>Date of Birth</strong><p>15 May 2012</p></div>
+              <div class="info-item"><strong>Address</strong><p>123 School Lane, Bangalore</p></div>
+              <div class="info-item"><strong>Blood Group</strong><p>O+</p></div>
+            </div>
+          </div>
+          <!-- Attendance Sub-Tab -->
+          <div id="sd-attendance" class="sub-tab-content hidden">
+            <h3>Attendance Log</h3>
+            <div class="stat-pills">
+              <div class="stat-pill green"><span>Overall Present</span><strong id="sdAttPct">96.5%</strong></div>
+              <div class="stat-pill red"><span>Absent Days</span><strong id="sdAttAbsent">5 days</strong></div>
+            </div>
+            <div class="calendar-container">
+              <div class="calendar-grid-header" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center; font-weight: 600; margin-bottom: 0.5rem;">
+                <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+              </div>
+              <div id="sdAttendanceCalendar" class="calendar-grid-days" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; text-align: center;"></div>
+            </div>
+          </div>
+          <!-- Results Sub-Tab -->
+          <div id="sd-results" class="sub-tab-content hidden">
+            <h3>Academic Results</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Subject</th><th>Mark</th><th>Grade</th><th>Status</th></tr></thead>
+                <tbody id="sdResultsTable"></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Behaviour Sub-Tab -->
+          <div id="sd-behaviour" class="sub-tab-content hidden">
+            <h3>Behaviour & Streak</h3>
+            <div class="behaviour-status">
+              <div class="stat-pill gold"><span>Streak Level</span><strong id="sdStreak">0 days</strong></div>
+              <div class="stat-pill blue"><span>Total XP Points</span><strong id="sdXP">0 pts</strong></div>
+            </div>
+            <div class="log-container">
+              <h4>Recent Behaviour Reports</h4>
+              <ul id="sdBehaviourLogs" class="log-list" style="list-style: none; padding: 0;"></ul>
+              <div class="teacher-only text-right" style="margin-top:1rem; display: flex; justify-content: flex-end;">
+                <button id="addBehaviourLogBtn" class="button-primary">Add Behaviour Report</button>
+              </div>
+            </div>
+          </div>
+          <!-- Medical Sub-Tab -->
+          <div id="sd-medical" class="sub-tab-content hidden">
+            <h3>Medical Information</h3>
+            <div class="info-grid">
+              <div class="info-item"><strong>Blood Group</strong><p>O-Positive</p></div>
+              <div class="info-item"><strong>Allergies</strong><p>Peanuts (Mild), Dust</p></div>
+              <div class="info-item"><strong>Emergency Contact</strong><p>Mrs. Jane Doe (+1 555 123 4567)</p></div>
+              <div class="info-item"><strong>Vaccination Status</strong><p>Up-to-date</p></div>
+            </div>
+          </div>
+          <!-- Fees Sub-Tab -->
+          <div id="sd-fees" class="sub-tab-content hidden">
+            <h3>Fee Statements</h3>
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>Fee Type</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="sdFeesTable"></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Parents Sub-Tab -->
+          <div id="sd-parents" class="sub-tab-content hidden">
+            <h3>Parents Information</h3>
+            <div class="info-grid">
+              <div class="info-item"><strong>Father Name</strong><p id="sdFatherName">Mr. James Doe</p></div>
+              <div class="info-item"><strong>Mother Name</strong><p id="sdMotherName">Mrs. Jane Doe</p></div>
+              <div class="info-item"><strong>Primary Contact Phone</strong><p>+1 555 123 4567</p></div>
+              <div class="info-item"><strong>Address</strong><p>123 School Lane, Bangalore</p></div>
+            </div>
+          </div>
+          <!-- Documents Sub-Tab -->
+          <div id="sd-documents" class="sub-tab-content hidden">
+            <h3>Student Documents</h3>
+            <ul id="sdDocumentsList" class="document-list" style="list-style: none; padding: 0;"></ul>
+            <div class="upload-container" style="margin-top:1.5rem;">
+              <label for="sdDocUpload" class="button-secondary">Upload Document</label>
+              <input type="file" id="sdDocUpload" style="display:none;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teacher Details Overlay -->
+  <div id="teacherDetailsOverlay" class="modal-overlay hidden">
+    <div class="modal-card wide-card glassmorphic">
+      <div class="overlay-header">
+        <div class="user-profile-header">
+          <div id="tdAvatar" class="avatar-large">T</div>
+          <div>
+            <h2 id="tdName">Teacher Name</h2>
+            <p id="tdRole">Mathematics Specialist</p>
+          </div>
+        </div>
+        <button onclick="closeOverlay('teacherDetailsOverlay')" class="close-btn">&times;</button>
+      </div>
+      <div class="overlay-content-split">
+        <nav class="overlay-sidebar" aria-label="Teacher details navigation">
+          <button class="sidebar-tab active" data-tab="td-profile">Profile</button>
+          <button class="sidebar-tab" data-tab="td-timetable">Timetable</button>
+          <button class="sidebar-tab" data-tab="td-lessonplans">Lesson Plans</button>
+          <button class="sidebar-tab" data-tab="td-teachingaids">Teaching Aids</button>
+          <button class="sidebar-tab" data-tab="td-performance">Performance</button>
+        </nav>
+        <div class="overlay-main-content">
+          <!-- Profile Sub-Tab -->
+          <div id="td-profile" class="sub-tab-content">
+            <h3>Teacher Profile</h3>
+            <div class="info-grid">
+              <div class="info-item"><strong>Email</strong><p id="tdEmail">smith@vibgyor.edu</p></div>
+              <div class="info-item"><strong>Phone</strong><p id="tdPhone">+1 555 987 6543</p></div>
+              <div class="info-item"><strong>Assigned Classes</strong><p id="tdClasses">8A, 8B</p></div>
+              <div class="info-item"><strong>Qualifications</strong><p>M.Sc. Mathematics, B.Ed.</p></div>
+              <div class="info-item"><strong>Date Joined</strong><p>01 June 2020</p></div>
+            </div>
+          </div>
+          <!-- Timetable Sub-Tab -->
+          <div id="td-timetable" class="sub-tab-content hidden">
+            <h3>Weekly Teaching Schedule</h3>
+            <div class="table-wrapper">
+              <table id="tdTimetableTable">
+                <thead><tr><th>Time</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Lesson Plans Sub-Tab -->
+          <div id="td-lessonplans" class="sub-tab-content hidden">
+            <h3>Lesson Plans Summary</h3>
+            <ul id="tdLessonPlansList" class="document-list" style="list-style: none; padding: 0;"></ul>
+          </div>
+          <!-- Teaching Aids Sub-Tab -->
+          <div id="td-teachingaids" class="sub-tab-content hidden">
+            <h3>Teaching Aids Uploaded</h3>
+            <ul id="tdTeachingAidsList" class="document-list" style="list-style: none; padding: 0;"></ul>
+          </div>
+          <!-- Performance Sub-Tab -->
+          <div id="td-performance" class="sub-tab-content hidden">
+            <h3>Performance Reviews</h3>
+            <div class="stat-pills">
+              <div class="stat-pill gold"><span>Student Rating</span><strong>4.8 / 5.0</strong></div>
+              <div class="stat-pill blue"><span>Syllabus Covered</span><strong>92%</strong></div>
+            </div>
+            <ul class="feedback-list" style="padding-left: 1.25rem; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <li><strong>Academic Year 2025:</strong> Highly positive student feedback. Excellent presentation style.</li>
+              <li><strong>Peer Review:</strong> Demonstrates high proficiency in pedagogy and student care.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lesson Plans Overlay -->
+  <div id="lessonPlansOverlay" class="modal-overlay hidden">
+    <div class="modal-card wide-card glassmorphic">
+      <div class="overlay-header">
+        <h2 id="lpOverlayTitle">Lesson Plans</h2>
+        <button onclick="closeOverlay('lessonPlansOverlay')" class="close-btn">&times;</button>
+      </div>
+      <div class="lp-container" style="display: flex; gap: 1.5rem; min-height: 400px;">
+        <div class="lp-sidebar" style="width: 250px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+          <button id="btnNewLP" class="button-primary lp-add-btn" style="width:100%;">Create New Plan</button>
+          <ul id="lpList" class="lp-list" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; overflow-y: auto; flex: 1;"></ul>
+        </div>
+        <div class="lp-main-view" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+          <div id="lpViewMode" class="lp-view-mode" style="display: flex; flex-direction: column; gap: 1rem; flex: 1; overflow-y: auto;">
+            <div class="lp-content-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 id="lpActiveTitle" style="margin:0;">Select a lesson plan</h3>
+              <div id="lpActions" class="lp-actions hidden" style="display: flex; gap: 0.5rem;">
+                <button id="lpEditBtn" class="action-btn action-edit">Edit</button>
+                <button id="lpApproveBtn" class="action-btn action-call principal-only">Approve</button>
+                <button id="lpDeleteBtn" class="action-btn action-delete teacher-only">Delete</button>
+              </div>
+            </div>
+            <div class="lp-badge-row" style="display: flex; gap: 0.5rem; font-size: 0.8rem;">
+              <span id="lpStatusBadge" class="status-badge" style="padding: 0.2rem 0.6rem; border-radius: 99px;">Approved</span>
+              <span id="lpVersionBadge" class="version-badge" style="padding: 0.2rem 0.6rem; border-radius: 99px; background: rgba(0,0,0,0.05);">v1.0</span>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
+            <div id="lpBodyContent" class="lp-body-content" style="line-height: 1.6; white-space: pre-wrap;">Select a lesson plan from the sidebar to view details, version history, and comments.</div>
+            <div id="lpAttachmentsArea" class="lp-attachments-area hidden">
+              <h4 style="margin-bottom: 0.5rem;">Attachments</h4>
+              <ul id="lpAttachmentsList" class="document-list" style="list-style: none; padding: 0;"></ul>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
+            <div class="lp-metadata">
+              <h4 style="margin-bottom: 0.5rem;">Version History</h4>
+              <ul id="lpHistoryList" class="history-list" style="padding-left: 1.25rem; font-size: 0.85rem; display: flex; flex-direction: column; gap: 0.25rem;"></ul>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 0;">
+            <div class="lp-comments-section">
+              <h4 style="margin-bottom: 0.5rem;">Comments & Reviews</h4>
+              <div class="comment-input-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.75rem;">
+                <input type="text" id="lpCommentInput" placeholder="Add a comment..." style="flex:1; padding: 0.5rem 1rem; border: 1px solid var(--border); border-radius: 99px; outline: none;" />
+                <button id="lpCommentSubmitBtn" class="button-primary" style="border-radius: 99px; padding: 0.5rem 1.25rem;">Post</button>
+              </div>
+              <ul id="lpCommentsList" class="comments-list" style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem;"></ul>
+            </div>
+          </div>
+          
+          <div id="lpEditMode" class="lp-edit-mode hidden" style="display: flex; flex-direction: column; gap: 1rem; flex: 1;">
+            <h3 id="lpEditHeader" style="margin: 0;">Create Lesson Plan</h3>
+            <div>
+              <label for="lpTitleInput" style="display:block; margin-bottom: 0.25rem; font-weight: 500;">Plan Title</label>
+              <input type="text" id="lpTitleInput" placeholder="e.g. Chapter 3: Fractions introduction" style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 12px; outline: none;" />
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <label for="lpBodyInput" style="display:block; margin-bottom: 0.25rem; font-weight: 500;">Content / Description</label>
+              <textarea id="lpBodyInput" placeholder="Describe objectives, materials, teaching procedures, and assessments." style="width: 100%; flex: 1; min-height: 180px; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 12px; outline: none; resize: none;"></textarea>
+            </div>
+            <div>
+              <label for="lpAttachmentInput" style="display:block; margin-bottom: 0.25rem; font-weight: 500;">Upload PDF/Document</label>
+              <input type="file" id="lpAttachmentInput" />
+            </div>
+            <div class="modal-actions" style="margin-top:1rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button id="lpCancelBtn" class="action-btn action-delete">Cancel</button>
+              <button id="lpSaveBtn" class="button-primary">Save Plan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teaching Aids Overlay -->
+  <div id="teachingAidsOverlay" class="modal-overlay hidden">
+    <div class="modal-card wide-card glassmorphic">
+      <div class="overlay-header">
+        <h2 id="taOverlayTitle">Teaching Aids</h2>
+        <button onclick="closeOverlay('teachingAidsOverlay')" class="close-btn">&times;</button>
+      </div>
+      <div class="ta-container" style="display: flex; gap: 1.5rem; min-height: 400px;">
+        <div class="ta-tabs-panel" style="width: 180px; flex-shrink: 0; border-right: 1px solid var(--border); padding-right: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+          <button class="ta-tab active" data-type="video" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">🎥 Videos</button>
+          <button class="ta-tab" data-type="ppt" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">📊 PowerPoint</button>
+          <button class="ta-tab" data-type="pdf" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">📄 PDFs</button>
+          <button class="ta-tab" data-type="flashcards" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">🃏 Flashcards</button>
+          <button class="ta-tab" data-type="interactive" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">🎮 Interactive</button>
+          <button class="ta-tab" data-type="links" style="text-align: left; padding: 0.75rem 1rem; border-radius: 12px; background: transparent; font-weight: 500;">🔗 Links</button>
+        </div>
+        <div class="ta-content-panel" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+          <div id="taGrid" class="ta-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem; overflow-y: auto; flex: 1;"></div>
+          <!-- Custom Visual Players for interactive display -->
+          <div id="taPlayerContainer" class="ta-player-container hidden" style="flex: 1; display: flex; flex-direction: column; gap: 1rem; min-height: 0;">
+            <div class="player-header" style="display: flex; align-items: center; gap: 1rem;">
+              <button id="taPlayerBack" class="button-secondary" style="border-radius: 99px; padding: 0.4rem 1rem;">‹ Back</button>
+              <h4 id="taPlayerTitle" style="margin: 0;">Playing Aid</h4>
+            </div>
+            <div id="taPlayerViewport" class="ta-player-viewport" style="flex: 1; background: #000; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VGS AI Overlay -->
+  <div id="aiChatOverlay" class="modal-overlay hidden">
+    <div class="modal-card glassmorphic chat-modal" style="max-width: 520px; height: 600px; display: flex; flex-direction: column;">
+      <div class="overlay-header" style="flex-shrink: 0; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);">
+        <div class="ai-branding" style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="logo-mark ai-pulse" style="background: linear-gradient(135deg, #98cce6 0%, #a8e0be 100%); color:#fff; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; font-size: 1.5rem; box-shadow: 0 0 15px rgba(168,85,247,0.4);"></span>
+          <div>
+            <h2 style="margin: 0; font-size: 1.25rem;">VGS AI</h2>
+            <small class="muted-text"><Strong>VIBGYOR 
+              Group of Schools</Strong>
+          </div>
+        </div>
+        <button onclick="closeOverlay('aiChatOverlay')" class="close-btn">&times;</button>
+      </div>
+      <div class="ai-chat-body" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding-top: 1rem;">
+        <div id="aiChatMessages" class="ai-chat-messages" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; padding: 0.5rem 0.25rem;">
+          <div class="ai-message received" style="display: flex; gap: 0.75rem; align-items: flex-start; max-width: 85%;">
+            <span class="ai-avatar" style="width: 28px; height: 28px; border-radius: 50%; background: #e78547; color:#dd0b0b; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;"></span>
+            <div class="bubble" style="background: rgba(79, 97, 255, 0.08); padding: 0.75rem 1rem; border-radius: 16px; border-top-left-radius: 4px; line-height: 1.5; font-size: 0.9rem;">
+              Hello! I am VGS AI. How can I help you today?
+            </div>
+          </div>
+        </div>
+        <div class="ai-suggestions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; flex-shrink: 0;">
+          <button type="button" class="ai-chip" onclick="sendVGSAIMessage(this.textContent.trim())" style="background: rgba(0,0,0,0.04); border-radius: 99px; padding: 0.4rem 0.8rem; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border);">Show today's homework</button>
+          <button type="button" class="ai-chip" onclick="sendVGSAIMessage(this.textContent.trim())" style="background: rgba(0,0,0,0.04); border-radius: 99px; padding: 0.4rem 0.8rem; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border);">When is the next exam?</button>
+          <button type="button" class="ai-chip" onclick="sendVGSAIMessage(this.textContent.trim())" style="background: rgba(0,0,0,0.04); border-radius: 99px; padding: 0.4rem 0.8rem; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border);">Check my attendance streak</button>
+          <button type="button" class="ai-chip" onclick="sendVGSAIMessage(this.textContent.trim())" style="background: rgba(0,0,0,0.04); border-radius: 99px; padding: 0.4rem 0.8rem; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--border);">Who teaches Grade 8A Mathematics?</button>
+        </div>
+        <form id="aiChatForm" action="javascript:void(0);" onsubmit="sendVGSAIMessage(); return false;" class="ai-chat-input-row" style="display: flex; gap: 0.90rem; flex-shrink: 0; padding-top: 0.5rem; border-top: 1px solid var(--border); margin-bottom: 0.5rem;">
+          <input type="text" id="aiChatInput" placeholder="Ask VGS AI anything about school..." autocomplete="off" style="flex: 1; padding: 0.75rem 1.25rem; border: 1px solid var(--border); border-radius: 99px; outline: none; font-size: 0.9rem; background: var(--bg-card, #ffffff); color: var(--text, #1e293b);" />
+          <button type="button" id="sendAIChatBtn" onclick="sendVGSAIMessage()" class="button-primary" style="border-radius: 99px; padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer;">Ask</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating VGS AI Widget Button (Bottom Right) -->
+  <button type="button" id="vgsAiFloatBtn" class="vgs-ai-float-btn" title="Ask VGS AI" aria-label="Open VGS AI Assistant" onclick="openOverlay('aiChatOverlay')">
+    <span class="vgs-ai-float-icon"></span>
+    <span class="vgs-ai-float-label">VGS AI</span>
+  </button>
+
+  </main>
+
+  <!-- ✨ New Work Modal Overlay -->
+  <div id="newWorkModal" class="nw-modal-backdrop" role="dialog" aria-modal="true" aria-label="Add new work">
+    <div class="nw-modal-dialog" id="newWorkDialog">
+      <button class="nw-modal-close" id="closeWorkModalBtn" aria-label="Close">✕</button>
+      <div class="nw-modal-icon"></div>
+      <div class="nw-modal-title">Add New Work</div>
+      <div class="nw-modal-sub">Assign a task to your team or yourself</div>
+      <div class="nw-form-group">
+        <label class="nw-label" for="newWorkTitleInput">Work Description</label>
+        <input type="text" id="newWorkTitleInput" class="nw-input" placeholder="Enter work description..." />
+      </div>
+      <div class="nw-form-row">
+        <div class="nw-form-group">
+          <label class="nw-label" for="newWorkRoleSelect">Assign Role</label>
+          <select id="newWorkRoleSelect" class="nw-select">
+            <option value="Principal" selected>Principal</option>
+            <option value="Staff">Staff</option>
+          </select>
+        </div>
+        <div class="nw-form-group">
+          <label class="nw-label" for="newWorkPrioritySelect">Priority</label>
+          <select id="newWorkPrioritySelect" class="nw-select">
+            <option value="High">🔴 High</option>
+            <option value="Normal" selected>🟡 Normal</option>
+            <option value="Low">🟢 Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="nw-modal-actions">
+        <button class="nw-btn-cancel" id="cancelWorkModalBtn">Cancel</button>
+        <button class="nw-btn-submit" id="submitNewWorkBtn">✦ Create &amp; Assign</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ VIBGYOR RAINBOW OVERLAY ═══════════ -->
+  <div id="vibgyorRainbowOverlay" class="vibgyor-rainbow-overlay" aria-hidden="true">
+    <div class="rainbow-bars-wrap" id="rainbowBarsWrap"></div>
+  </div>
+
+  <!-- ═══════════ VIBGYOR SCHOOL INFO POPUP ═══════════ -->
+  <!-- Blur backdrop — sits behind the card, in front of the rainbow bars -->
+  <div id="vibgyorBlurBackdrop" class="vibgyor-blur-backdrop" aria-hidden="true"></div>
+  <div id="vibgyorSchoolPopup" class="vibgyor-school-popup" role="dialog" aria-modal="true" aria-labelledby="schoolPopupTitle">
+    <div class="school-popup-inner">
+
+      <!-- Spinning rainbow border handled by ::after -->
+
+      <!-- ① Header row: logo + name + close -->
+      <div class="spu-header">
+        <div class="spu-logo-wrap" aria-hidden="true">V</div>
+        <div class="spu-title-block">
+          <strong id="schoolPopupTitle">VIBGYOR</strong>
+          <small>GROUP OF SCHOOLS</small>
+          <span class="spu-tagline">🌈 Painting Tomorrow's Brilliance</span>
+        </div>
+        <button class="school-popup-close" id="schoolPopupClose" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <!-- ② Rainbow rule -->
+      <div class="school-popup-rainbow-strip" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <!-- ③ Feature chips — 2 × 3 grid boxes -->
+      <div class="spu-features">
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🎓</span>
+          <span class="spu-chip-text">CBSE, ICSE &amp; IB<br><small>Grades 1–12</small></span>
+        </div>
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🏅</span>
+          <span class="spu-chip-text">Sports &amp; Arts<br><small>Award-winning</small></span>
+        </div>
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🌐</span>
+          <span class="spu-chip-text">Smart Classrooms<br><small>Digital-first</small></span>
+        </div>
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🤝</span>
+          <span class="spu-chip-text">Staff &amp; Admin<br><small>Management</small></span>
+        </div>
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🚌</span>
+          <span class="spu-chip-text">30+ Campuses<br><small>Pan India</small></span>
+        </div>
+        <div class="spu-chip">
+          <span class="spu-chip-icon">🏫</span>
+          <span class="spu-chip-text">K-12 Leader<br><small>Since 1999</small></span>
+        </div>
+      </div>
+
+      <!-- ④ Stats strip -->
+      <div class="spu-stats">
+        <div class="spu-stat"><span class="spu-stat-n">30+</span><span class="spu-stat-l">Campuses</span></div>
+        <div class="spu-stat"><span class="spu-stat-n">50K+</span><span class="spu-stat-l">Students</span></div>
+        <div class="spu-stat"><span class="spu-stat-n">25+</span><span class="spu-stat-l">Yrs Legacy</span></div>
+        <div class="spu-stat"><span class="spu-stat-n">98%</span><span class="spu-stat-l">Pass Rate</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Pay Fee Modal -->
+  <div id="payFeeModal" class="fees-modal-backdrop hidden" aria-modal="true" role="dialog">
+    <div class="fees-modal-dialog">
+      <div class="fees-modal-header">
+        <div class="fees-modal-title-group">
+          <h3>💳 Online Fee Checkout</h3>
+          <p class="fees-modal-subtitle">Vibgyor Group of Schools • Accounts Portal</p>
+        </div>
+        <button type="button" class="fees-modal-close" onclick="closePayFeeModal()">&times;</button>
+      </div>
+
+      <div class="fees-modal-body">
+        <div id="payFeeSummaryCard" class="pay-summary-box">
+          <div class="pay-summary-row">
+            <span>Fee Item:</span>
+            <strong id="payFeeTitle">Tuition Fee</strong>
+          </div>
+          <div class="pay-summary-row">
+            <span>Term / Session:</span>
+            <span id="payFeeTerm">Term 3 (2026-2027)</span>
+          </div>
+          <div class="pay-summary-row">
+            <span>Due Date:</span>
+            <span id="payFeeDueDate">Sep 15, 2026</span>
+          </div>
+          <div class="pay-summary-divider"></div>
+          <div class="pay-summary-row total">
+            <span>Amount Due:</span>
+            <strong id="payFeeAmount" class="pay-amount-highlight">₹18,000</strong>
+          </div>
+        </div>
+
+        <div class="pay-methods-wrap">
+          <label class="pay-methods-label">Select Payment Method</label>
+          <div class="pay-methods-grid">
+            <label class="pay-method-option active">
+              <input type="radio" name="payMethod" value="UPI / GPay" checked />
+              <span class="pay-method-icon">📱</span>
+              <span class="pay-method-name">UPI / QR Code (GPay, PhonePe)</span>
+            </label>
+            <label class="pay-method-option">
+              <input type="radio" name="payMethod" value="Credit/Debit Card" />
+              <span class="pay-method-icon">💳</span>
+              <span class="pay-method-name">Credit / Debit Card</span>
+            </label>
+            <label class="pay-method-option">
+              <input type="radio" name="payMethod" value="Net Banking" />
+              <span class="pay-method-icon">🏛️</span>
+              <span class="pay-method-name">Net Banking (HDFC, SBI, ICICI)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="fees-modal-footer">
+        <button type="button" class="fees-btn-cancel" onclick="closePayFeeModal()">Cancel</button>
+        <button type="button" id="confirmPayFeeBtn" class="fees-btn-confirm">
+          <span class="btn-text">Pay <strong id="payBtnAmountText">₹18,000</strong> Now</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official Fee Receipt Modal -->
+  <div id="receiptModal" class="fees-modal-backdrop hidden" aria-modal="true" role="dialog">
+    <div class="fees-modal-dialog receipt-dialog-width">
+      <div class="receipt-paper" id="printableReceiptArea">
+        <div class="receipt-header">
+          <div class="receipt-logo">V</div>
+          <div class="receipt-school-meta">
+            <h2>VIBGYOR GROUP OF SCHOOLS</h2>
+            <p>Official Fee Receipt &amp; Tax Invoice</p>
+            <small>Affiliated to CBSE / ICSE • Reg No: VGS-2026-KA</small>
+          </div>
+          <div class="receipt-status-badge">
+            <span class="badge-paid">PAID</span>
+          </div>
+        </div>
+
+        <div class="receipt-watermark-stamp">STAMP VERIFIED</div>
+
+        <div class="receipt-details-grid">
+          <div class="receipt-detail-item">
+            <span class="lbl">Receipt No:</span>
+            <strong id="receiptNoText">REC-2026-0000</strong>
+          </div>
+          <div class="receipt-detail-item">
+            <span class="lbl">Payment Date:</span>
+            <strong id="receiptDateText">Aug 29, 2026</strong>
+          </div>
+          <div class="receipt-detail-item">
+            <span class="lbl">Student Name:</span>
+            <strong id="receiptStudentName">Harshith Doe</strong>
+          </div>
+          <div class="receipt-detail-item">
+            <span class="lbl">Grade &amp; Section:</span>
+            <strong id="receiptStudentClass">Grade 8 - Section A</strong>
+          </div>
+          <div class="receipt-detail-item">
+            <span class="lbl">Academic Session:</span>
+            <strong id="receiptSessionText">2026-2027</strong>
+          </div>
+          <div class="receipt-detail-item">
+            <span class="lbl">Payment Mode:</span>
+            <strong id="receiptPaymentMode">UPI / QR Code</strong>
+          </div>
+        </div>
+
+        <table class="receipt-table">
+          <thead>
+            <tr>
+              <th>Description / Particulars</th>
+              <th>Term / Quarter</th>
+              <th style="text-align: right;">Amount (₹)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="receiptFeeDesc">Tuition Fee</td>
+              <td id="receiptFeeTerm">Term 3</td>
+              <td id="receiptFeeAmount" style="text-align: right;">₹18,000</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align: right; font-weight: 600;">Total Amount Paid:</td>
+              <td id="receiptTotalAmount" style="text-align: right; font-weight: 700; font-size: 16px; color: #059669;">₹18,000</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="receipt-footer-notes">
+          <p>This is a computer-generated digital payment receipt issued by Vibgyor Group of Schools. No physical signature required.</p>
+        </div>
+      </div>
+
+      <div class="receipt-actions">
+        <button type="button" class="fees-btn-cancel" onclick="closeReceiptModal()">Close</button>
+        <button type="button" class="fees-btn-print" onclick="window.print()">
+          🖨️ Print / Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Manage Fee Record Modal (Add / Edit) -->
+  <div id="feeManageModal" class="fees-modal-backdrop hidden" aria-modal="true" role="dialog">
+    <div class="fees-modal-dialog fee-manage-dialog">
+      <div class="fees-modal-header">
+        <div class="fees-modal-title-group">
+          <h3 id="feeManageModalTitle">➕ Add / Edit Fee Record</h3>
+          <p class="fees-modal-subtitle">Modify columns for the selected session fee</p>
+        </div>
+        <button type="button" class="fees-modal-close" onclick="closeFeeManageModal()">&times;</button>
+      </div>
+
+      <form id="feeManageForm" class="fee-manage-form" onsubmit="handleSaveFeeRecord(event)">
+        <input type="hidden" id="manageFeeId" value="" />
+
+        <div class="form-grid-2">
+          <div>
+            <label for="manageFeeTitle">Fee Type</label>
+            <input id="manageFeeTitle" type="text" placeholder="e.g. Tuition Fee" required />
+          </div>
+          <div>
+            <label for="manageFeeSubType">Fee Sub Type</label>
+            <input id="manageFeeSubType" type="text" placeholder="e.g. Instalment 1" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="manageFeeCategory">Fees Category</label>
+            <select id="manageFeeCategory">
+              <option value="Tuition">Tuition Fee</option>
+              <option value="Annual">Annual Charges</option>
+              <option value="Lab">Lab &amp; Computer</option>
+              <option value="Exam">Examinations</option>
+              <option value="Transport">Transport Service</option>
+              <option value="Activities">Activities &amp; Sports</option>
+            </select>
+          </div>
+          <div>
+            <label for="manageFeeSubCategory">Fees Sub Category</label>
+            <input id="manageFeeSubCategory" type="text" placeholder="e.g. NA or AC Bus" value="NA" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="manageFeePeriod">Period of Service</label>
+            <input id="manageFeePeriod" type="text" placeholder="e.g. Quarter 1" required />
+          </div>
+          <div>
+            <label for="manageFeeDueDate">Due Date</label>
+            <input id="manageFeeDueDate" type="date" required />
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div>
+            <label for="manageFeeAmount">Fees (₹)</label>
+            <input id="manageFeeAmount" type="number" placeholder="25000" min="0" required />
+          </div>
+          <div>
+            <label for="manageFeeAdjusted">Adjusted (₹)</label>
+            <input id="manageFeeAdjusted" type="number" placeholder="0" min="0" value="0" />
+          </div>
+          <div>
+            <label for="manageFeeCollected">Collected (₹)</label>
+            <input id="manageFeeCollected" type="number" placeholder="0" min="0" value="0" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div>
+            <label for="manageFeeStatus">Status</label>
+            <select id="manageFeeStatus">
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div>
+            <label for="manageFeeSession">Session</label>
+            <select id="manageFeeSession">
+              <option value="2026-2027">2026–2027</option>
+              <option value="2025-2026">2025–2026</option>
+              <option value="2024-2025">2024–2025</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fees-modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeFeeManageModal()">Cancel</button>
+          <button type="submit" class="btn-save-fee">💾 Save Fee Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-labelledby="forgotModalTitle">
+    <div class="modal-card forgot-modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
+      
+      <!-- Step 1: Account Lookup -->
+      <div id="forgotStep1" class="forgot-step active">
+        <div class="forgot-header">
+          <div class="forgot-icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          </div>
+          <h3 id="forgotModalTitle">Forgot Password</h3>
+          <p class="forgot-subtitle">Select your recovery option linked to your Vibgyor account.</p>
+        </div>
+
+        <div class="forgot-method-tabs">
+          <button type="button" class="forgot-tab active" id="tabForgotGmail" onclick="switchForgotMethod('email')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Gmail Account
+          </button>
+          <button type="button" class="forgot-tab" id="tabForgotMobile" onclick="switchForgotMethod('phone')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Mobile Number
+          </button>
+        </div>
+
+        <form id="forgotStep1Form" onsubmit="handleForgotLookup(event)">
+          <div id="forgotInputGroup">
+            <label for="forgotAccountInput" id="forgotInputLabel">Linked Gmail Address</label>
+            <input id="forgotAccountInput" type="text" placeholder="e.g. user@gmail.com or admin.schoolapp@org" required />
+          </div>
+          <p id="forgotStep1Error" class="forgot-error"></p>
+          <button type="submit" class="forgot-submit-btn" id="forgotSendOtpBtn">
+            <span>Send OTP Verification Code</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <!-- Step 2: OTP & New Password -->
+      <div id="forgotStep2" class="forgot-step hidden">
+        <div class="forgot-header">
+          <div class="forgot-icon-badge step2-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Verify OTP & Reset</h3>
+          <p class="forgot-subtitle" id="forgotRecipientNotice">We sent a 6-digit OTP code to your registered contact.</p>
+        </div>
+
+        <div id="simulatedOtpBanner" class="simulated-otp-banner">
+          <span class="otp-badge-icon">📩</span>
+          <div class="otp-banner-text">
+            <strong>Simulated OTP Code:</strong> <span id="simulatedOtpCode">123456</span>
+            <small>(Generated for rapid testing)</small>
+          </div>
+        </div>
+
+        <form id="forgotStep2Form" onsubmit="handleForgotResetSubmit(event)">
+          <label for="forgotOtpInput">6-Digit OTP Code</label>
+          <div class="otp-input-wrapper">
+            <input id="forgotOtpInput" type="text" maxlength="6" placeholder="Enter 6-digit OTP" pattern="[0-9]{6}" required autocomplete="one-time-code" />
+            <button type="button" id="resendOtpBtn" class="resend-otp-btn" onclick="resendForgotOtp()">Resend OTP (<span id="otpCountdown">45</span>s)</button>
+          </div>
+
+          <label for="forgotNewPassword">New Password</label>
+          <input id="forgotNewPassword" type="password" placeholder="Minimum 5 characters" minlength="5" required />
+
+          <label for="forgotConfirmPassword">Confirm New Password</label>
+          <input id="forgotConfirmPassword" type="password" placeholder="Re-enter new password" minlength="5" required />
+
+          <p id="forgotStep2Error" class="forgot-error"></p>
+          
+          <div class="forgot-actions-row">
+            <button type="button" class="forgot-back-btn" onclick="goToForgotStep(1)">Back</button>
+            <button type="submit" class="forgot-submit-btn">Reset Password</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Reset Success -->
+      <div id="forgotStep3" class="forgot-step hidden">
+        <div class="forgot-success-card">
+          <div class="success-checkmark-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3>Password Reset Successful!</h3>
+          <p class="forgot-subtitle">Your password has been updated. You can now log in using your updated credentials.</p>
+          <button type="button" class="forgot-submit-btn" onclick="closeForgotPasswordModalAndFill()">Back to Sign In</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="parser.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
